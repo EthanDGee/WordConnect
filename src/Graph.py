@@ -1,22 +1,64 @@
 import string
 import heapq
-import random
+import xml.etree.ElementTree as ET
+from DisjointSet import DisjointSet
 
 
 class Graph:
 	def __init__(self, file_name=None):
 		self.vertexes = {}
 		if file_name:
-			print("Loading Graph...")
+			print("Loading Graph...", end="")
 			self.load_vertexes(file_name)
 			print("\rLoaded Words")
-			print("Bridging Connections...")
+			print("Bridging Connections...", end="")
 			self.make_connections()
 			print("\rBridging Complete")
-			print("Removing Vertexes with 0 Edges...")
+			print("Removing Loners...", end="")
 			self.remove_edge_less_vertexes()
-			print("\rRemoved Vertexes with 0 Edges")
+			print("\rRemoved Loners")
+			print("Removing word islets...", end="")
+			self.remove_islets()
+			print("\rRemoved word islets")
+
 			print("Graph Loaded")
+
+	def __str__(self):
+		result = ""
+		for vertex in self.vertexes.values():
+			result += str(vertex) + "\n"
+		return result
+
+	def export_graph(self, file_path):
+		"""
+		Exports the graph as a GraphML file.
+		:param file_path: The output file path where the GraphML will be written.
+		"""
+		# Create the GraphML root and graph tags
+		graphml = ET.Element("graphml", xmlns="http://graphml.graphdrawing.org/xmlns")
+		graph = ET.SubElement(graphml, "graph", id="G", edgedefault="undirected")
+
+		# Add all vertices as nodes
+		for vertex in self.vertexes.values():
+			ET.SubElement(graph, "node", id=vertex.get_id())
+
+		# Add unique edges, avoiding duplicates
+		added_edges = set()  # Track unique edges (undirected edges are treated as sets)
+		for vertex in self.vertexes.values():
+			for neighbor in vertex.get_edges():
+				# Create an edge as a frozenset of the nodes (undirected)
+				edge = frozenset([vertex.get_id(), neighbor])
+				if edge not in added_edges:
+					ET.SubElement(graph, "edge", source=vertex.get_id(), target=neighbor)
+					added_edges.add(edge)
+
+		# Create the XML tree and write to the file path
+		tree = ET.ElementTree(graphml)
+		try:
+			tree.write(file_path, encoding='utf-8', xml_declaration=True)
+			print(f"Graph exported successfully to {file_path}")
+		except IOError as e:
+			print(f"An IOError occurred while writing the file: {e}")
 
 	# Vertex Methods
 	def has_vertex(self, vertex_id):
@@ -38,7 +80,10 @@ class Graph:
 		except IOError as e:
 			print(f"An IOError occurred: {e}")
 
-	# Bridging Connections
+	def get_vertexes(self):
+		return self.vertexes
+
+	# Connect Set Up Methods
 	def make_connections(self):
 		# loops through all vertexes/words
 		for word, vertex in self.vertexes.items():
@@ -69,6 +114,30 @@ class Graph:
 		for vertex_id in vertex_ids_to_remove:
 			del self.vertexes[vertex_id]
 
+	def remove_islets(self):
+
+		# create a disjoint set and then use the disjoint set to define groupings
+		disjoint_set = DisjointSet(self.vertexes)
+
+		for vertex in self.vertexes.keys():
+			# loop through the edges and add them to the union
+			for neighbor in self.vertexes[vertex].get_edges():
+				if disjoint_set.find(vertex) != disjoint_set.find(neighbor):
+					disjoint_set.union(vertex, neighbor)
+
+		# Now we're going to loop through the vertexes and then remove the small islets
+
+		MINIMUM_ISLAND_SIZE = 5
+		vertex_ids_to_remove = []
+
+		for vertex in self.vertexes.keys():
+			if disjoint_set.get_size(vertex) <= MINIMUM_ISLAND_SIZE:
+				vertex_ids_to_remove.append(vertex)
+
+		for vertex_id in vertex_ids_to_remove:
+			del self.vertexes[vertex_id]
+
+	# Paths/Grouping
 	def find_shortest_path(self, start_word, end_word):
 
 		#  Uses Dijkstra's algorithm to find the shortest path between two words
@@ -112,15 +181,6 @@ class Graph:
 		# If no path is found, return an empty list
 		return []
 
-	def get_vertexes(self):
-		return self.vertexes
-
-	def __str__(self):
-		result = ""
-		for vertex in self.vertexes.values():
-			result += str(vertex) + "\n"
-		return result
-
 
 class Vertex:
 	def __init__(self, vertex_id):
@@ -141,18 +201,3 @@ class Vertex:
 
 	def __str__(self):
 		return self.vertex_id + " - " + str(self.edges)
-
-
-if __name__ == "__main__":
-	graph = Graph("../data/words_trimmed.txt")
-	print(graph)
-	possible_words = list(graph.vertexes.keys())
-
-	for x in range(100):
-		random_words = random.sample(possible_words, 2)
-		print(f"{random_words[0]} -> {random_words[1]}")
-		path = graph.find_shortest_path(random_words[0], random_words[1])
-		if not path:
-			print("No Path Found")
-		else:
-			print(path)
