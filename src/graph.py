@@ -115,6 +115,8 @@ class Graph:
 			del self.vertexes[vertex_id]
 
 	def remove_islets(self):
+		# looks through the connected graph and finds islets of that are smaller
+		# than minimum_island_size and removes them
 
 		# create a disjoint set and then use the disjoint set to define groupings
 		disjoint_set = DisjointSet(self.vertexes)
@@ -127,11 +129,11 @@ class Graph:
 
 		# Now we're going to loop through the vertexes and then remove the small islets
 
-		MINIMUM_ISLAND_SIZE = 5
+		minimum_island_size = 5
 		vertex_ids_to_remove = []
 
 		for vertex in self.vertexes.keys():
-			if disjoint_set.get_size(vertex) <= MINIMUM_ISLAND_SIZE:
+			if disjoint_set.get_size(vertex) <= minimum_island_size:
 				vertex_ids_to_remove.append(vertex)
 
 		for vertex_id in vertex_ids_to_remove:

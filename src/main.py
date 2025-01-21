@@ -1,11 +1,11 @@
-from Graph import Graph
+from graph import Graph
 import random
 
 if __name__ == "__main__":
 	graph = Graph("../data/words_trimmed.txt")
 	# print(graph)
 	print(len(graph.vertexes))
-	# graph.export_graph("../data/graph.graphml")
+	graph.export_graph("../data/graph.graphml")
 
 	possible_words = list(graph.vertexes.keys())
 

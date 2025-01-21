@@ -1,9 +1,12 @@
 def is_valid_word(word):
 	# Checks whether a word is valid or not, A 'valid word' has all its characters between 'a' and 'z'.
+	if len(word) == 0:
+		return False
 
 	for char in word:
 		if ord(char) < 97 or ord(char) > 122:  # ASCII range for 'a' to 'z'
 			return False
+
 	return True
 
 
