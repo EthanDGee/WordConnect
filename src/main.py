@@ -2,10 +2,12 @@ from graph import Graph
 import random
 
 
-def print_path(path):
-	for word in path:
+def display_word_sequence(word_path):
+	for word in word_path:
 		print(word, end=" -> ")
 	print()
+
+
 
 
 if __name__ == "__main__":
@@ -15,7 +17,6 @@ if __name__ == "__main__":
 
 	possible_words = list(graph.vertexes.keys())
 
-	
 	# Initiate Game Loop
 	while True:
 		print("finding pair...", end='\r')
@@ -29,7 +30,7 @@ if __name__ == "__main__":
 			current_word = ""
 
 			# until we reach the goal
-			while current_word != random_words[1]:
+			while last_word != random_words[1]:
 
 				# prompt the user for a word
 				while not graph.vertexes.get(last_word).has_neighbor(current_word):
@@ -40,12 +41,14 @@ if __name__ == "__main__":
 						print("Invalid word")
 						current_word = ""
 					else:
-						guess_count += 1 
+						guess_count += 1
 						print(f"Valid Word - {guess_count}")
 				if current_word == "q":
 					break
 				last_word = current_word
 
 		print(f"You got the word in {guess_count} guesses!")
-		print(f"The Computer was about to get there in {len(path) - 2} guesses.")
-		print_path(path)
+		# an extra 1 is removed from user due to loop issues (there's no do-while loops in python)
+		print(f"The Computer was about to get there in {len(path) - 3} guesses.")
+		display_word_sequence(path)
+qqq
