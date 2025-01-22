@@ -201,5 +201,8 @@ class Vertex:
 	def get_degree(self):
 		return len(self.edges)
 
+	def has_neighbor(self, word):
+		return word in self.edges
+
 	def __str__(self):
 		return self.vertex_id + " - " + str(self.edges)
