@@ -1,19 +1,20 @@
 import sqlite3
 import json
-from os import supports_bytes_environ
+from graph import Graph
 
 
 class Database:
     def __init__(self, name: str):
         # Creates/connects to database and checks for validity
 
-        self.connection = sqlite3.connect(f"{name}.db")
+        self.connection = sqlite3.connect(name)
         self.connection.execute("CREATE TABLE IF NOT EXISTS puzzle "
                                 "(id INTEGER PRIMARY KEY, "
                                 "start TEXT,"
                                 "goal TEXT,"
                                 "score INTEGER,"
                                 "solution BLOB)")
+        self.connection.commit()
 
     class Puzzle:
         def __init__(self, start: str, goal: str, score: int, solution: list):
@@ -30,26 +31,35 @@ class Database:
             start = row[1]
             goal = row[2]
             score = row[3]
-            solution = row[4]
+            solution = json.loads(row[4])
 
             return cls(start, goal, score, solution)
 
-    def add_puzzle(self, start: str, goal: str, score: int, solution: list):
+        @classmethod
+        def convert_solution_to_puzzle(cls, solution: list):
+            start = solution[0]
+            end = solution[-1]
+            score = len(solution)
+            solution = solution
+            return cls(start, end, score, solution)
+
+    def add_puzzle(self, puzzle):
         # adds a puzzle to the database
         row = self.connection.execute(
-            "SELECT * FROM puzzle WHERE start = ? AND goal = ? AND score = ? AND solution = ?",
-            (start, goal, score, json.dumps(solution))).fetchone()
+            "SELECT * FROM puzzle WHERE start = ? AND goal = ?",
+            (puzzle.start, puzzle.goal)).fetchone()
         # since the game is identical forwards and back in order to avoid duplicates there has to be an additional
         # check if the reverse of the puzzle has already been added.
 
         reverse_row = self.connection.execute(
-            "SELECT * FROM puzzle WHERE start = ? AND goal = ? AND score = ? AND solution = ?",
-            (goal, start, score, json.dumps(solution))).fetchone()
+            "SELECT * FROM puzzle WHERE start = ? AND goal = ?",
+            (puzzle.goal, puzzle.start)).fetchone()
 
-        if not row:
+        if row is None and reverse_row is None:
             self.connection.execute("INSERT INTO puzzle (start, goal, score, solution) VALUES (?, ?, ?, ?)",
-                                    (start, goal, score, json.dumps(solution)))
+                                    (puzzle.start, puzzle.goal, puzzle.score, json.dumps(puzzle.solution)))
             self.connection.commit()
+            print("Puzzle added to database")
             return True
         else:
             return False
@@ -60,6 +70,20 @@ class Database:
         row = cursor.fetchone()
         return self.Puzzle.convert_row_to_puzzle(row) if row else None
 
+    def create_new_puzzles(self, amount):
+        # adds an 'amount' of new puzzles to the database
+
+        graph = Graph("../data/filtered_words.txt")
+
+        total_puzzles_added = 0
+        while total_puzzles_added < amount:
+            new_puzzle = graph.generate_puzzle()
+            print(new_puzzle)
+            if self.add_puzzle(self.Puzzle.convert_solution_to_puzzle(new_puzzle)):
+                total_puzzles_added += 1
+
 
 if __name__ == "__main__":
-    db = Database("game_test")
+    db = Database("game_data.db")
+    db.create_new_puzzles(1000)
+    db.connection.close()
