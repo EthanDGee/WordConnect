@@ -22,38 +22,34 @@ class Database:
             self.score = score
             self.solution = solution
 
-        def convert_cursor_to_puzzle(self, row: sqlite3.Row):
+        def __str__(self):
+            return f"Puzzle(start={self.start}, goal={self.goal}, score={self.score}, solution={self.solution})"
+
+        @classmethod
+        def convert_row_to_puzzle(cls, row: sqlite3.Row):
             start = row[1]
             goal = row[2]
             score = row[3]
             solution = row[4]
 
-            return self.__init__(start, goal, score, solution)
+            return cls(start, goal, score, solution)
 
     def add_puzzle(self, start: str, goal: str, score: int, solution: list):
         # adds a puzzle to the database
-        self.connection.execute("INSERT INTO puzzle (start, goal, score, solution) VALUES (?, ?, ?, ?)",
-                                (start, goal, score, json.dumps(solution)))
-        self.connection.commit()
+        row = self.connection.execute(
+            "SELECT * FROM puzzle WHERE start = ? AND goal = ? AND score = ? AND solution = ?",
+            (start, goal, score, json.dumps(solution))).fetchone()
+        if not row:
+            self.connection.execute("INSERT INTO puzzle (start, goal, score, solution) VALUES (?, ?, ?, ?)",
+                                    (start, goal, score, json.dumps(solution)))
+            self.connection.commit()
 
     def get_random_score_puzzle(self, score: int):
         # returns a random puzzle from database that matches the provided score.
         cursor = self.connection.execute("SELECT * FROM puzzle WHERE score = ? ORDER BY RANDOM() LIMIT 1", (score,))
         row = cursor.fetchone()
-        return self.Puzzle.convert_cursor_to_puzzle(row) if row else None
+        return self.Puzzle.convert_row_to_puzzle(row) if row else None
 
 
 if __name__ == "__main__":
     db = Database("game_test")
-    db.add_puzzle("a", "b", 3, [])
-    db.add_puzzle("c", "d", 3, [])
-    db.add_puzzle("e", "f", 3, [])
-    db.add_puzzle("g", "h", 2, [])
-    db.add_puzzle("i", "j", 2, [])
-    db.add_puzzle("k", "l", 2, [])
-    db.add_puzzle("m", "n", 2, [])
-    db.add_puzzle("o", "p", 1, [])
-    db.add_puzzle("q", "r", 1, [])
-    db.add_puzzle("s", "t", 5, [])
-
-    print(db.get_random_score_puzzle(3)["start"])
