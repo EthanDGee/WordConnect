@@ -196,9 +196,17 @@ class Graph:
             end_word = random.randint(0, len(self.vertexes) - 1)
             shortest_path = self.find_shortest_path(list(self.vertexes.keys())[start_word],
                                                     list(self.vertexes.keys())[end_word])
-            if shortest_path:
+            if len(shortest_path) > 0:
                 puzzle_found = True
                 return shortest_path
+
+    def bulk_generate_puzzles(self, puzzle_count):
+        # generates a specified amount of puzzles
+        generated_puzzles = []
+
+        for i in range(puzzle_count):
+            new_puzzle = self.generate_puzzle()
+            generated_puzzles.append(new_puzzle)
 
 
 class Vertex:
