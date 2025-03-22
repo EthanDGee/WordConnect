@@ -1,5 +1,4 @@
-from graph import Graph
-import random
+from database import Database
 
 
 def display_word_sequence(word_path):
@@ -7,21 +6,36 @@ def display_word_sequence(word_path):
         print(word, end=" -> ")
     print()
 
+class Game:
+    def __init__(self, word_list_path):
+        self.possible_word = self.load_words(word_list_path)
 
-def tutorial():
-    print("Welcome to Word Connect!")
-    print(
-        "You will be presented with a pair of words, and you will need to get between them in as few moves as possible.")
-    print("You can only change one letter at a time. You can swap a letter, add a letter, or remove a letter.")
-    print(" If you want to quit, type 'q'. Try your best to tie the computer (you will not beat it)")
+    def load_words(self, word_list_path):
+        loaded_words = []
+        try:
+            with open(word_list_path, "r") as reader:
+                for line in reader:
+                    word = line.strip()
+                    loaded_words.append(word)
+        except IOError as e:
+            print(f"An IOError occurred: {e}")
+
+    def tutorial():
+        print("Welcome to Word Connect!")
+        print(
+            "You will be presented with a pair of words, and you will need to get between them in as few moves as possible.")
+        print("You can only change one letter at a time. You can swap a letter, add a letter, or remove a letter.")
+        print(" If you want to quit, type 'q'. Try your best to tie the computer (you will not beat it)")
+
 
 
 if __name__ == "__main__":
 
     tutorial()
-    graph = Graph("../data/filtered_words.txt")
+    db = Database("game_data.db")
 
-    # graph.export_graph("../data/graph.graphml")
+    while True:
+        puzzle = db.get_random_score_puzzle(3)
 
     possible_words = list(graph.vertexes.keys())
 
