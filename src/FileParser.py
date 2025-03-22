@@ -33,4 +33,3 @@ if __name__ == "__main__":
     src_file_name = "../data/words.txt"
     dest_file_name = "../data/words_trimmed.txt"
     trim_words(src_file_name, dest_file_name)
-
