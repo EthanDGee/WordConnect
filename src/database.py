@@ -39,10 +39,20 @@ class Database:
         row = self.connection.execute(
             "SELECT * FROM puzzle WHERE start = ? AND goal = ? AND score = ? AND solution = ?",
             (start, goal, score, json.dumps(solution))).fetchone()
+        # since the game is identical forwards and back in order to avoid duplicates there has to be an additional
+        # check if the reverse of the puzzle has already been added.
+
+        reverse_row = self.connection.execute(
+            "SELECT * FROM puzzle WHERE start = ? AND goal = ? AND score = ? AND solution = ?",
+            (goal, start, score, json.dumps(solution))).fetchone()
+
         if not row:
             self.connection.execute("INSERT INTO puzzle (start, goal, score, solution) VALUES (?, ?, ?, ?)",
                                     (start, goal, score, json.dumps(solution)))
             self.connection.commit()
+            return True
+        else:
+            return False
 
     def get_random_score_puzzle(self, score: int):
         # returns a random puzzle from database that matches the provided score.
