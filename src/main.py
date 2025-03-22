@@ -6,26 +6,98 @@ def display_word_sequence(word_path):
         print(word, end=" -> ")
     print()
 
+
 class Game:
     def __init__(self, word_list_path):
-        self.possible_word = self.load_words(word_list_path)
+        self.possible_words = self.load_words(word_list_path)
 
-    def load_words(self, word_list_path):
+    @staticmethod
+    def load_words(word_list_path):
         loaded_words = []
         try:
             with open(word_list_path, "r") as reader:
                 for line in reader:
                     word = line.strip()
                     loaded_words.append(word)
+
+            return loaded_words
         except IOError as e:
             print(f"An IOError occurred: {e}")
 
+    @staticmethod
     def tutorial():
         print("Welcome to Word Connect!")
         print(
             "You will be presented with a pair of words, and you will need to get between them in as few moves as possible.")
         print("You can only change one letter at a time. You can swap a letter, add a letter, or remove a letter.")
         print(" If you want to quit, type 'q'. Try your best to tie the computer (you will not beat it)")
+
+    def valid_jump(self, start: str, next: str):
+        # a function that determines if a users word is a valid jump from the current word
+        # if the word jump is valid return True
+        # else return false, and print error
+
+        if start == next:
+            print("Invalid Jump: You can't jump to the same word.")
+            return False
+
+        # check for too many or too little letters
+        if len(start) - len(next) >= 2:
+            print("Invalid Jump: You can only add one letter at a time.")
+            return False
+        elif len(start) - len(next) <= -2:
+            print("Invalid Jump: You can only drop one letter at a time.")
+            return False
+
+        # check if it's in the much larger user list
+        if next not in self.possible_words:
+            return False
+
+        # if they're the same size check for only one swapped letter
+        if len(start) == len(next):
+            swapped_letters = 0
+            for i in range(len(start)):
+                if start[i] != next[i]:
+                    swapped_letters += 1
+            if swapped_letters != 1:
+                print("Invalid Jump: You can only swap one letter at a time.")
+
+        # if a letter was dropped
+        if len(start) > len(next):
+            changed_letters = 0
+            start_index = 0
+            next_index = 0
+            while start_index < len(start) and next_index < len(next):
+                if start[start_index] != next[next_index]:
+                    changed_letters += 1
+                    start_index += 1
+                else:
+                    start_index += 1
+                    next_index += 1
+
+            if changed_letters != 1:
+                print("Invalid Jump: You can only drop one letter at a time.")
+
+
+
+        # if a letter was added
+        if len(start) < len(next):
+            changed_letters = 0
+            start_index = 0
+            next_index = 0
+            while start_index < len(start) and next_index < len(next):
+                if start[start_index] != next[next_index]:
+                    next_index += 1
+                    start_index += 1
+                else:
+                    start_index += 1
+                    next_index += 1
+
+            if changed_letters != 1:
+                print("Invalid Jump: You can only drop one letter at a time.")
+
+        # if all tests have been passed
+        return True
 
 
 
