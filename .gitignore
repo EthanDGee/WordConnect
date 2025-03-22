@@ -1,3 +1,9 @@
 .idea
-data/*
-*.iml
+.venv
+build/
+dist/
+data/
+*.iml*.xml
+*.toc
+*.zip
+*.html
