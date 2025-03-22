@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from os import supports_bytes_environ
+from graph import Graph
 
 
 class Database:
@@ -34,21 +34,21 @@ class Database:
 
             return cls(start, goal, score, solution)
 
-    def add_puzzle(self, start: str, goal: str, score: int, solution: list):
+    def add_puzzle(self, puzzle: 'Database.Puzzle'):
         # adds a puzzle to the database
         row = self.connection.execute(
             "SELECT * FROM puzzle WHERE start = ? AND goal = ? AND score = ? AND solution = ?",
-            (start, goal, score, json.dumps(solution))).fetchone()
+            (puzzle.start, puzzle.goal, puzzle.score, json.dumps(puzzle.solution))).fetchone()
         # since the game is identical forwards and back in order to avoid duplicates there has to be an additional
         # check if the reverse of the puzzle has already been added.
 
         reverse_row = self.connection.execute(
             "SELECT * FROM puzzle WHERE start = ? AND goal = ? AND score = ? AND solution = ?",
-            (goal, start, score, json.dumps(solution))).fetchone()
+            (puzzle.goal, puzzle.start, puzzle.score, json.dumps(puzzle.solution))).fetchone()
 
-        if not row:
+        if not row and not reverse_row:
             self.connection.execute("INSERT INTO puzzle (start, goal, score, solution) VALUES (?, ?, ?, ?)",
-                                    (start, goal, score, json.dumps(solution)))
+                                    (puzzle.start, puzzle.goal, puzzle.score, json.dumps(puzzle.solution)))
             self.connection.commit()
             return True
         else:
