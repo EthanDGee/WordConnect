@@ -37,6 +37,9 @@ class Game:
         # if the word jump is valid return True
         # else return false, and print error
 
+        start = start.lower()
+        next = next.lower()
+
         if start == next:
             print("Invalid Jump: You can't jump to the same word.")
             return False
@@ -64,18 +67,11 @@ class Game:
 
         # if a letter was dropped
         if len(start) > len(next):
-            changed_letters = 0
-            start_index = 0
-            next_index = 0
-            while start_index < len(start) and next_index < len(next):
-                if start[start_index] != next[next_index]:
-                    changed_letters += 1
-                    start_index += 1
-                else:
-                    start_index += 1
-                    next_index += 1
+            for i in range(len(next)):
+                if start[i] != next[i]:
+                    print("Invalid Jump: You can only swap one letter at a time.")
+                    return False
 
-            if changed_letters != 1:
                 print("Invalid Jump: You can only drop one letter at a time.")
 
 
@@ -88,7 +84,7 @@ class Game:
             while start_index < len(start) and next_index < len(next):
                 if start[start_index] != next[next_index]:
                     next_index += 1
-                    start_index += 1
+                    changed_letters += 1
                 else:
                     start_index += 1
                     next_index += 1
@@ -103,7 +99,8 @@ class Game:
 
 if __name__ == "__main__":
 
-    tutorial()
+    game = Game("../data/filtered_words.txt")
+    game.tutorial()
     db = Database("game_data.db")
 
     while True:
