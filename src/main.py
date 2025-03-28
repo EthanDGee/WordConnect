@@ -1,6 +1,5 @@
 from database import Database
 
-
 def display_word_sequence(word_path):
     for word in word_path:
         print(word, end=" -> ")
@@ -10,6 +9,7 @@ def display_word_sequence(word_path):
 class Game:
     def __init__(self, word_list_path):
         self.possible_words = self.load_words(word_list_path)
+        self.db = Database("game_data.db")
 
     @staticmethod
     def load_words(word_list_path):
@@ -31,6 +31,10 @@ class Game:
             "You will be presented with a pair of words, and you will need to get between them in as few moves as possible.")
         print("You can only change one letter at a time. You can swap a letter, add a letter, or remove a letter.")
         print(" If you want to quit, type 'q'. Try your best to tie the computer (you will not beat it)")
+
+    @staticmethod
+    def format_user_guesses(guesses):
+        return " -> ".join(guesses)
 
     def valid_jump(self, start: str, next: str):
         # a function that determines if a users word is a valid jump from the current word
@@ -108,6 +112,34 @@ class Game:
 
         # if all tests have been passed
         return True
+
+    def new_puzzle(self):
+        puzzle = self.db.get_random_score_puzzle(3)
+        not_solved = True
+        print(f"New Puzzle - {puzzle.start} -> {puzzle.goal}")
+        print(f"Score: {puzzle.score}")
+        current_word = puzzle.start
+        user_guesses = []
+        while not_solved:
+            print("Enter your next guess: ", end="")
+            guess = input().lower()
+            if self.valid_jump(current_word, guess):
+                current_word = guess
+                user_guesses.append(guess)
+                # check for win
+                if current_word == puzzle.goal:
+                    not_solved = False
+                else:
+                    # if they're not done print a message telling them they have a valid guess
+                    print("Valid Jump ", end='')
+
+
+
+        print("You won!")
+        print(f"You guessed the word in {len(user_guesses)} guesses.")
+        print(self.format_user_guesses(user_guesses))
+        print(f"The Computer guessed the word in {puzzle.score} guesses.")
+        print(puzzle.format_solution())
 
 
 if __name__ == "__main__":
