@@ -43,6 +43,9 @@ class Database:
             solution = solution
             return cls(start, end, score, solution)
 
+        def format_solution(self):
+            return " -> ".join(self.solution)
+
     def add_puzzle(self, puzzle):
         # adds a puzzle to the database
         row = self.connection.execute(
