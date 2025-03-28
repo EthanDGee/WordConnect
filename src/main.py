@@ -60,6 +60,7 @@ class Game:
 
         # check if it's in the much larger user list
         if next_word not in self.possible_words:
+            print("Invalid Jump: that word is not in the valid word list.")
             return False
 
         # if they're the same size check for only one swapped letter
@@ -119,7 +120,7 @@ class Game:
         return True
 
     def new_puzzle(self):
-        puzzle = self.db.get_random_score_puzzle(3)
+        puzzle = self.db.get_random_score_puzzle(5)
         not_solved = True
         print(f"New Puzzle - {puzzle.start} -> {puzzle.goal}")
         print(f"Score: {puzzle.score}")
@@ -129,6 +130,7 @@ class Game:
             print("Enter your next guess: ", end="")
             guess = input().lower()
             if self.valid_jump(current_word, guess):
+                print("Valid Jump")
                 current_word = guess
                 user_guesses.append(guess)
                 # check for win
@@ -136,9 +138,12 @@ class Game:
                     # insert start word at guess head
                     user_guesses.insert(0, puzzle.start)
                     not_solved = False
-                else:
-                    # if they're not done print a message telling them they have a valid guess
-                    print("Valid Jump ", end='')
+            elif guess == "q":
+                print("Goodbye!")
+                break
+            else:
+                print("Invalid Jump")
+
 
         print("You won!")
         print(f"You guessed the word in {len(user_guesses)} guesses.")
