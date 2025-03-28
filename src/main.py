@@ -37,49 +37,49 @@ class Game:
     def format_user_guesses(guesses):
         return " -> ".join(guesses)
 
-    def valid_jump(self, start: str, next: str):
+    def valid_jump(self, start: str, next_word: str):
         # a function that determines if a users word is a valid jump from the current word
         # if the word jump is valid return True
         # else return false, and print error
 
         start = start.lower()
-        next = next.lower()
+        next_word = next_word.lower()
 
         # same word case
-        if start == next:
+        if start == next_word:
             print("Invalid Jump: You can't jump to the same word.")
             return False
 
         # check for too many or too little letters
-        if len(start) - len(next) >= 2:
+        if len(start) - len(next_word) >= 2:
             print("Invalid Jump: You can only add one letter at a time.")
             return False
-        elif len(start) - len(next) <= -2:
+        elif len(start) - len(next_word) <= -2:
             print("Invalid Jump: You can only drop one letter at a time.")
             return False
 
         # check if it's in the much larger user list
-        if next not in self.possible_words:
+        if next_word not in self.possible_words:
             return False
 
         # if they're the same size check for only one swapped letter
-        if len(start) == len(next):
+        if len(start) == len(next_word):
             swapped_letters = 0
             for i in range(len(start)):
-                if start[i] != next[i]:
+                if start[i] != next_word[i]:
                     swapped_letters += 1
             if swapped_letters != 1:
                 print("Invalid Jump: You can only swap one letter at a time.")
                 return False
 
         # if a letter was dropped
-        elif len(start) > len(next):
+        elif len(start) > len(next_word):
             dropped_letters = 0
             start_index = 0
             next_index = 0
 
-            while start_index < len(start) and next_index < len(next):
-                if start[start_index] != next[next_index]:
+            while start_index < len(start) and next_index < len(next_word):
+                if start[start_index] != next_word[next_index]:
                     start_index += 1
                     dropped_letters += 1
                 else:
@@ -96,20 +96,24 @@ class Game:
 
 
         # if a letter was added
-        elif len(start) < len(next):
+        elif len(start) < len(next_word):
             changed_letters = 0
             start_index = 0
             next_index = 0
-            while start_index < len(start) and next_index < len(next):
-                if start[start_index] != next[next_index]:
+            while start_index < len(start) and next_index < len(next_word):
+                if start[start_index] != next_word[next_index]:
                     next_index += 1
                     changed_letters += 1
                 else:
                     start_index += 1
                     next_index += 1
 
+            if changed_letters == 0 and next_index == len(next_word) - 1:
+                changed_letters += 1
+
             if changed_letters != 1:
                 print("Invalid Jump: You can only add one letter at a time.")
+                return False
 
         # if all tests have been passed
         return True
@@ -129,6 +133,8 @@ class Game:
                 user_guesses.append(guess)
                 # check for win
                 if current_word == puzzle.goal:
+                    # insert start word at guess head
+                    user_guesses.insert(0, puzzle.start)
                     not_solved = False
                 else:
                     # if they're not done print a message telling them they have a valid guess
