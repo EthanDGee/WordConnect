@@ -40,6 +40,7 @@ class Game:
         start = start.lower()
         next = next.lower()
 
+        # same word case
         if start == next:
             print("Invalid Jump: You can't jump to the same word.")
             return False
@@ -64,20 +65,33 @@ class Game:
                     swapped_letters += 1
             if swapped_letters != 1:
                 print("Invalid Jump: You can only swap one letter at a time.")
+                return False
 
         # if a letter was dropped
-        if len(start) > len(next):
-            for i in range(len(next)):
-                if start[i] != next[i]:
-                    print("Invalid Jump: You can only swap one letter at a time.")
-                    return False
+        elif len(start) > len(next):
+            dropped_letters = 0
+            start_index = 0
+            next_index = 0
 
+            while start_index < len(start) and next_index < len(next):
+                if start[start_index] != next[next_index]:
+                    start_index += 1
+                    dropped_letters += 1
+                else:
+                    start_index += 1
+                    next_index += 1
+
+            if dropped_letters == 0 and start_index == len(start) - 1:
+                # Letter is dropped at the very end (valid scenario)
+                dropped_letters += 1
+
+            elif dropped_letters != 1:
                 print("Invalid Jump: You can only drop one letter at a time.")
-
+                return False
 
 
         # if a letter was added
-        if len(start) < len(next):
+        elif len(start) < len(next):
             changed_letters = 0
             start_index = 0
             next_index = 0
@@ -90,11 +104,10 @@ class Game:
                     next_index += 1
 
             if changed_letters != 1:
-                print("Invalid Jump: You can only drop one letter at a time.")
+                print("Invalid Jump: You can only add one letter at a time.")
 
         # if all tests have been passed
         return True
-
 
 
 if __name__ == "__main__":
