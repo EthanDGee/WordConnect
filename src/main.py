@@ -1,5 +1,6 @@
 from database import Database
 
+
 def display_word_sequence(word_path):
     for word in word_path:
         print(word, end=" -> ")
@@ -133,8 +134,6 @@ class Game:
                     # if they're not done print a message telling them they have a valid guess
                     print("Valid Jump ", end='')
 
-
-
         print("You won!")
         print(f"You guessed the word in {len(user_guesses)} guesses.")
         print(self.format_user_guesses(user_guesses))
@@ -146,48 +145,7 @@ if __name__ == "__main__":
 
     game = Game("../data/filtered_words.txt")
     game.tutorial()
-    db = Database("game_data.db")
-
-    while True:
-        puzzle = db.get_random_score_puzzle(3)
-
-    possible_words = list(graph.vertexes.keys())
 
     # Initiate Game Loop
     while True:
-        print("finding pair...", end='\r')
-
-        random_words = random.sample(possible_words, 2)
-        path = graph.find_shortest_path(random_words[0], random_words[1])
-        guess_count = 0
-        current_word = ""
-        if path:
-            print(f"Pair Found! - {random_words[0]} -> {random_words[1]} in {len(path) - 1}\n{random_words[0]}")
-
-            last_word = random_words[0]
-            current_word = ""
-
-            # until we reach the goal
-            while last_word != random_words[1]:
-
-                # prompt the user for a wordPAW
-                while not graph.vertexes.get(last_word).has_neighbor(current_word):
-                    current_word = input().lower().strip()
-                    if current_word == "q":
-                        break
-                    if current_word not in graph.vertexes:
-                        print(f"Invalid word - current word {last_word}")
-                        current_word = ""
-                    else:
-                        guess_count += 1
-                        print(f"Valid Word - {guess_count}")
-                if current_word == "q":
-                    break
-                last_word = current_word
-
-        if current_word != "q":
-            print(f"You got the word in {guess_count} guesses!")
-        # an extra 1 is removed from user due to loop issues (there's no do-while loops in python)
-        print(f"The Computer got there in {len(path)} guesses.")
-        display_word_sequence(path)
-        print("\n\n")
+       game.new_puzzle()
