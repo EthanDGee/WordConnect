@@ -131,7 +131,7 @@ class Graph:
 
         # Now we're going to loop through the vertexes and then remove the small islets
 
-        minimum_island_size = 5
+        minimum_island_size = 20
         vertex_ids_to_remove = []
 
         for vertex in self.vertexes.keys():
@@ -196,7 +196,8 @@ class Graph:
             end_word = random.randint(0, len(self.vertexes) - 1)
             shortest_path = self.find_shortest_path(list(self.vertexes.keys())[start_word],
                                                     list(self.vertexes.keys())[end_word])
-            if len(shortest_path) > 0:
+            if len(shortest_path) > 2:
+
                 puzzle_found = True
                 return shortest_path
 
