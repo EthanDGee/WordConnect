@@ -43,10 +43,15 @@ class WordFilter:
                     elif not self.is_common_word(word):
                         print(f"Uncommon Word - {word}")
                         filter_counts["uncommon"] += 1
+                    elif len(word) == 1:
+                        # due to the way word freq measurers word frequency all letters get improperly flagged as common.
+                        print(f"Single Character Word - {word}")
                     else:
                         print(f"Valid Word - {word}")
                         filter_counts["valid"] += 1
                         writer.write(word + '\n')
+            # add in i and a
+            writer.write("i\na")
         except IOError as e:
             print(f"An IOError occurred: {e}")
 

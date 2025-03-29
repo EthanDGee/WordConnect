@@ -62,7 +62,6 @@ class Database:
             self.connection.execute("INSERT INTO puzzle (start, goal, score, solution) VALUES (?, ?, ?, ?)",
                                     (puzzle.start, puzzle.goal, puzzle.score, json.dumps(puzzle.solution)))
             self.connection.commit()
-            print("Puzzle added to database")
             return True
         else:
             return False
@@ -76,17 +75,16 @@ class Database:
     def create_new_puzzles(self, amount):
         # adds an 'amount' of new puzzles to the database
 
-        graph = Graph("../data/filtered_words.txt")
+        graph = Graph("../data/words_trimmed.txt")
 
         total_puzzles_added = 0
         while total_puzzles_added < amount:
             new_puzzle = graph.generate_puzzle()
-            print(new_puzzle)
             if self.add_puzzle(self.Puzzle.convert_solution_to_puzzle(new_puzzle)):
                 total_puzzles_added += 1
 
 
 if __name__ == "__main__":
     db = Database("game_data.db")
-    db.create_new_puzzles(1000)
+    db.create_new_puzzles(5000)
     db.connection.close()
