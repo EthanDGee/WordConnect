@@ -1,14 +1,12 @@
 from better_profanity import profanity
-from nltk.corpus import stopwords
-import nltk
+from wordfreq import zipf_frequency
 
 
 class WordFilter:
     def __init__(self, initial_data_file_name, destination_file_name):
         self.initial_data_file_name = initial_data_file_name
         self.destination_file_name = destination_file_name
-        # load common words from the natural language toolkit library
-        self.common_words = set(stopwords.words('english'))
+        self.frequency_threshold = 3
 
     @staticmethod
     def is_valid_word(word):
@@ -23,8 +21,8 @@ class WordFilter:
         return True
 
     def is_common_word(self, word):
-        # returns whether a given word is a common word using the nltk library
-        return word in self.common_words
+        # returns whether a given word is a common word using it's word frequency
+        return zipf_frequency(word, 'en') > self.frequency_threshold
 
     def trim_words(self):
         profanity.load_censor_words()
@@ -57,8 +55,6 @@ class WordFilter:
 
 
 if __name__ == "__main__":
-    nltk.download('stopwords')  # uncomment these if you need to download the common words
-
     src_file_name = "../data/words.txt"
     dest_file_name = "../data/words_trimmed.txt"
     word_parser = WordFilter(src_file_name, dest_file_name)
