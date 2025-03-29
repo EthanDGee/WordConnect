@@ -6,7 +6,7 @@ class WordFilter:
     def __init__(self, initial_data_file_name, destination_file_name):
         self.initial_data_file_name = initial_data_file_name
         self.destination_file_name = destination_file_name
-        self.frequency_threshold = 3
+        self.frequency_threshold = 3.8
 
     @staticmethod
     def is_valid_word(word):
