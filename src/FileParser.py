@@ -3,7 +3,7 @@ from nltk.corpus import stopwords
 import nltk
 
 
-class WordParser:
+class WordFilter:
     def __init__(self, initial_data_file_name, destination_file_name):
         self.initial_data_file_name = initial_data_file_name
         self.destination_file_name = destination_file_name
@@ -28,24 +28,38 @@ class WordParser:
 
     def trim_words(self):
         profanity.load_censor_words()
+        filter_counts = {"invalid": 0, "profanity": 0, "uncommon": 0, "valid": 0}
 
         # parses through a given file and only returns the valid words.
         try:
             with open(self.initial_data_file_name, "r") as reader, open(self.destination_file_name, "w") as writer:
                 for line in reader:
                     word = line.strip()  # Remove any surrounding whitespace or newline characters
-                    if not self.is_valid_word(word) or profanity.contains_profanity(word) or not self.is_common_word(word):
-                        print(f"Failed Word - {word}")
+                    if not self.is_valid_word(word):
+                        print(f"Invalid Word- {word}")
+                        filter_counts["invalid"] += 1
+                    elif profanity.contains_profanity(word):
+                        # prints only the first letter with the rest of the word represented by '*'s
+                        print(f"Profanity Word - {word[0]}{'*' * (len(word) - 1)}")
+                        filter_counts["profanity"] += 1
+                    elif not self.is_common_word(word):
+                        print(f"Uncommon Word - {word}")
+                        filter_counts["uncommon"] += 1
                     else:
+                        print(f"Valid Word - {word}")
+                        filter_counts["valid"] += 1
                         writer.write(word + '\n')
         except IOError as e:
             print(f"An IOError occurred: {e}")
 
+        for filter_type in filter_counts.keys():
+            print(f"{filter_type}: {filter_counts[filter_type]}")
+
 
 if __name__ == "__main__":
-    nltk.download('stopwords') # uncomment these if you need to download the common words
+    nltk.download('stopwords')  # uncomment these if you need to download the common words
 
     src_file_name = "../data/words.txt"
     dest_file_name = "../data/words_trimmed.txt"
-    word_parser = WordParser(src_file_name, dest_file_name)
+    word_parser = WordFilter(src_file_name, dest_file_name)
     word_parser.trim_words()
