@@ -85,6 +85,6 @@ class Database:
 
 
 if __name__ == "__main__":
-    db = Database("game_data.db")
-    db.create_new_puzzles(5000)
+    db = Database("../data/game_data.db")
+    db.create_new_puzzles(10000)
     db.connection.close()
