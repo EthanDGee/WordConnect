@@ -34,10 +34,13 @@ You can:
 3. Remove a letter, remove any letter from the current word that you like.
     - Part**y** -> Part
 
-Your goal is minimize the total number of moves to get from your start word to your end word. For an added difficulty
+Made a mistake and want to backtrack to a previous word? Enter **B** to go back to the last word at no penalty to your
+final score.
+
+Your goal is to minimize the total number of moves to get from your start word to your end word. For an added difficulty
 try and beat/tie the bot. The bot is programmed to find an optimal path between the two words.In order to make things
 more fair the bot has been given a much smaller vocabulary than you. The bot has access to around 5,000 words, as
-compared to your ~27,000. This will still be quite the challenge, and tie-ing the bot will be it's own everest to summit.
+compared to your ~27,000. This will still be quite the challenge, and tie-ing the bot will be its own everest to summit.
 
 ### Example:
 
