@@ -33,9 +33,11 @@ class Game:
     def tutorial():
         print("Welcome to Word Connect!")
         print(
-            "You will be presented with a pair of words, and you will need to get between them in as few moves as possible.")
-        print("You can only change one letter at a time. You can swap a letter, add a letter, or remove a letter.")
-        print(" If you want to quit, type 'q'. Try your best to tie the computer (you will not beat it)")
+            "You will be presented with a pair of words, and you will need to try and get between them in as few moves"
+            " as possible.\nYou can only change one letter at a time. You can swap a letter, add a letter, or remove "
+            "a letter.\nMade a mistake and want to go back a step? Type 'b' to go back to your previous word at no "
+            "penalty to your score If you want to quit the current puzzle, type 'q'.\n Try your best to tie the "
+            "computer, or if you're really skilled, and a little lucky, you can even try to beat it")
 
     def format_word_sequence(self):
         return self.start_word + " -> ".join(self.word_sequence)
@@ -63,7 +65,7 @@ class Game:
 
         # check if it's in the much larger user list
         if next_word not in self.possible_words:
-            print("Invalid Jump: that word is not in the valid word list.")
+            print(f"Invalid Jump: {next_word} is not in the valid word list.")
             return False
 
         # if they're the same size check for only one swapped letter
@@ -145,16 +147,25 @@ class Game:
                 if self.current_word == self.goal_word:
                     not_solved = False
             elif guess == "q":
-                print("Goodbye!")
                 break
             else:
                 print("Invalid Jump")
 
-        print("You won!")
-        print(f"You guessed the word in {len(self.word_sequence)} guesses.")
-        print(self.format_word_sequence())
-        print(f"The Computer guessed the word in {puzzle.score} guesses.")
-        print(puzzle.format_solution())
+        print("\n")
+
+        if not_solved:
+            print("You lost!")
+            print(f"The Computer guessed the word in {puzzle.score} guesses.")
+            print(puzzle.format_solution())
+        else:
+            print("You won!")
+            print(f"You guessed the word in {len(self.word_sequence)} guesses.")
+            print(self.format_word_sequence())
+            print(f"The Computer guessed the word in {puzzle.score} guesses.")
+            print(puzzle.format_solution())
+
+        # add some white space for a clear gap between puzzles
+        print("\n")
 
     def back_track(self):
         if len(self.word_sequence) == 0:
