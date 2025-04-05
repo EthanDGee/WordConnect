@@ -290,11 +290,14 @@
             if (currentWord === startWord) {
                 errorMessage.textContent = 'Cannot delete the start word';
             } else {
-                currentWord = startWord;
-                moves--;
-                wordGrid.innerHTML = '';
-                addWordToGrid(startWord);
-                errorMessage.textContent = '';
+                const rows = wordGrid.querySelectorAll('.word-row');
+                if (rows.length > 1) {
+                    wordGrid.removeChild(rows[rows.length - 1]);
+                    const lastRow = rows[rows.length - 2];
+                    currentWord = Array.from(lastRow.children).map(box => box.textContent.toLowerCase()).join('');
+                    moves--;
+                    errorMessage.textContent = '';
+                }
             }
         })
 
