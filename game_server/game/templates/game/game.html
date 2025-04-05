@@ -208,14 +208,6 @@
         <button id="delete-word">Delete Word</button>
     </div>
 
-    <div class="stats">
-        <p>Moves: <span id="move-count">0</span></p>
-    </div>
-    <div id="solution" style="align-items: center; justify-content: center; display: flex;">
-
-        <button id="view-solution-button">View Solution</button>
-    </div>
-
 </div>
 
 <script>
@@ -309,16 +301,6 @@
         }
     })
 
-    // VIEW SOLUTION
-    document.getElementById('view-solution-button').addEventListener('click', () => {
-        // Disable input
-        const input = document.getElementById('word-input');
-        input.disabled = true;
-        document.getElementById('submit-word').disabled = true;
-
-        const solution = document.getElementById('solution')
-        solution.appendChild(document.createElement(solution.tagName))
-    })
 
     // Initialize the grid with the start word
     addWordToGrid(startWord);
