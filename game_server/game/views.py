@@ -1,16 +1,14 @@
 from django.shortcuts import render
-from django.shortcuts import render
 from django.http import JsonResponse
-from database import Database
-import sqlite3
-from main import Game
+from game.src.database import Database
+from game.src.main import Game
 import json
 from pathlib import Path
 
 
 def get_random_puzzle(difficulty_level: int = 4):
-    db_path = Path(__file__).parent.parent.parent / 'src' / 'game_data.db'
-    db = Database("game_data.db")
+    db_path = "game/data/game_data.db"
+    db = Database(db_path)
     puzzle = db.get_random_score_puzzle(difficulty_level)
     return {
         'start_word': puzzle.start,
@@ -22,10 +20,10 @@ def get_random_puzzle(difficulty_level: int = 4):
 
 def game_view(request):
     puzzle = get_random_puzzle()
-    return render(request, 'game.html', {
+    return render(request, 'game/game.html', {
         'start_word': puzzle['start_word'],
         'end_word': puzzle['end_word'],
-        'solution_length': puzzle['solution_length'],
+        'score': puzzle['score'],
         'solution': puzzle['solution']
     })
 

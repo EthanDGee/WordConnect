@@ -1,4 +1,4 @@
-from database import Database
+from .database import Database
 
 
 def display_word_sequence(word_path):

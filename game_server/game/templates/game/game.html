@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'game/base.html' %}
 
 {% block extra_head %}
 <style>
@@ -143,16 +143,24 @@
     <div class="input-container">
         <input type="text" id="word-input" maxlength="8" placeholder="Enter your next word">
         <button id="submit-word">Submit</button>
+        <button id="delete-word">Delete Word</button>
     </div>
 
     <div class="stats">
         <p>Moves: <span id="move-count">0</span></p>
     </div>
+    <div id="solution" style="align-items: center; justify-content: center; display: flex;">
+
+        <button id="view-solution-button">View Solution</button>
+    </div>
+
 </div>
 
 <script>
     const startWord = "{{ start_word }}";
     const endWord = "{{ end_word }}";
+    const solutionLength = "{{ solution_length }}";
+    const solution = "{{ solution }}";
     let currentWord = startWord;
     let moves = 0;
     const wordGrid = document.getElementById('word-grid');
@@ -163,7 +171,7 @@
         const row = document.createElement('div');
         row.className = 'word-row';
 
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < word.length; i++) {
             const box = document.createElement('div');
             box.className = 'letter-box';
             if (i < word.length) {
@@ -194,6 +202,7 @@
             .then(response => response.json());
     }
 
+    // WORD INPUT
     document.getElementById('submit-word').addEventListener('click', async () => {
         const input = document.getElementById('word-input');
         const nextWord = input.value.toLowerCase().trim();
@@ -223,8 +232,36 @@
         }
     });
 
+    // WORD DELETION
+    document.getElementById('delete-word').addEventListener('click', () => {
+
+        if (currentWord === startWord) {
+            errorMessage.textContent = 'Cannot delete the start word';
+            return;
+        } else {
+            currentWord = startWord;
+            moves--;
+            moveCount.textContent = moves;
+            wordGrid.innerHTML = '';
+            addWordToGrid(startWord);
+            errorMessage.textContent = '';
+        }
+    })
+
+    // VIEW SOLUTION
+    document.getElementById('view-solution-button').addEventListener('click', () => {
+        // Disable input
+        const input = document.getElementById('word-input');
+        input.disabled = true;
+        document.getElementById('submit-word').disabled = true;
+
+        const solution = document.getElementById('solution')
+        solution.appendChild(document.createElement(solution.tagName))
+    })
+
     // Initialize the grid with the start word
     addWordToGrid(startWord);
+
 
     // Handle Enter key
     document.getElementById('word-input').addEventListener('keypress', (e) => {

@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from graph import Graph
+from .graph import Graph
 
 
 class Database:

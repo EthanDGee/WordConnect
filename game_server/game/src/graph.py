@@ -2,7 +2,7 @@ import string
 import heapq
 import random
 import xml.etree.ElementTree as ET
-from DisjointSet import DisjointSet
+from .DisjointSet import DisjointSet
 
 
 class Graph:
