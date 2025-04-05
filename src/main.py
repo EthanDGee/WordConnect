@@ -14,6 +14,7 @@ class Game:
         self.start_word = "filler-start-word"
         self.current_word = "filler-start-word"
         self.goal_word = "filler-goal-word"
+        self.word_sequence = []
 
     @staticmethod
     def load_words(word_list_path):
@@ -37,7 +38,7 @@ class Game:
         print(" If you want to quit, type 'q'. Try your best to tie the computer (you will not beat it)")
 
     @staticmethod
-    def format_user_guesses(guesses):
+    def format_word_sequence(guesses):
         return " -> ".join(guesses)
 
     def valid_jump(self, start: str, next_word: str):
@@ -130,7 +131,7 @@ class Game:
         self.start_word = puzzle.start
         self.current_word = puzzle.start
         self.goal_word = puzzle.goal
-        user_guesses = []
+        self.word_sequence = []
         while not_solved:
             print("Enter your next guess: ", end="")
             guess = input().lower()
@@ -140,11 +141,11 @@ class Game:
             if self.valid_jump(self.current_word, guess):
                 print("Valid Jump")
                 self.current_word = guess
-                user_guesses.append(guess)
+                self.word_sequence.append(guess)
                 # check for win
                 if self.current_word == self.goal_word:
                     # insert start word at guess head
-                    user_guesses.insert(0, puzzle.start)
+                    self.word_sequence.insert(0, puzzle.start)
                     not_solved = False
             elif guess == "q":
                 print("Goodbye!")
@@ -153,17 +154,19 @@ class Game:
                 print("Invalid Jump")
 
         print("You won!")
-        print(f"You guessed the word in {len(user_guesses)} guesses.")
-        print(self.format_user_guesses(user_guesses))
+        print(f"You guessed the word in {len(self.word_sequence)} guesses.")
+        print(self.format_word_sequence(self.word_sequence))
         print(f"The Computer guessed the word in {puzzle.score} guesses.")
         print(puzzle.format_solution())
 
     def back_track(self):
         if self.current_word == self.start_word:
             print("You can't go back any further.")
+            return False
         else:
-            self.current_word = self.start_word
+            self.current_word = self.word_sequence.pop()
             print(f"Backtracked to {self.start_word}")
+            return True
 
 if __name__ == "__main__":
 
