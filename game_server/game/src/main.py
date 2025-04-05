@@ -42,72 +42,80 @@ class Game:
     def format_word_sequence(self):
         return self.start_word + " -> ".join(self.word_sequence)
 
-    def valid_jump(self, start: str, next_word: str):
-        # a function that determines if a users word is a valid jump from the current word
-        # if the word jump is valid return True
-        # else return false, and print error
+    def valid_jump(self, current: str, next_word: str):
+        """
+        Determines if a given transition/jump between words is valid.
 
-        start = start.lower()
+        Parameters:
+        current: str
+            The starting word for the validation process.
+        next_word: str
+            The word to which the transition is being checked for validity.
+
+        Returns:
+            success: bool
+            error: str
+        """
+        # a function that determines if a users word is a valid jump from the current word
+        # if the word jump is valid return True, and ""
+        # else return false, and return error
+
+        current = current.lower()
         next_word = next_word.lower()
 
         # same word case
-        if start == next_word:
-            print("Invalid Jump: You can't jump to the same word.")
-            return False
+        if current == next_word:
+            return False, "Invalid Jump: You can't jump to the same word."
 
         # check for too many or too little letters
-        if len(start) - len(next_word) >= 2:
-            print("Invalid Jump: You can only add one letter at a time.")
-            return False
-        elif len(start) - len(next_word) <= -2:
-            print("Invalid Jump: You can only drop one letter at a time.")
-            return False
+        if len(current) - len(next_word) >= 2:
+            return False, "Invalid Jump: You can only add one letter at a time."
+        elif len(current) - len(next_word) <= -2:
+            return False, "Invalid Jump: You can only drop one letter at a time."
 
         # check if it's in the much larger user list
         if next_word not in self.possible_words:
-            print(f"Invalid Jump: {next_word} is not in the valid word list.")
-            return False
+            return False, f"Invalid Jump: {next_word} is not in the valid word list."
 
         # if they're the same size check for only one swapped letter
-        if len(start) == len(next_word):
+        if len(current) == len(next_word):
             swapped_letters = 0
-            for i in range(len(start)):
-                if start[i] != next_word[i]:
+            for i in range(len(current)):
+                if current[i] != next_word[i]:
                     swapped_letters += 1
             if swapped_letters != 1:
-                print("Invalid Jump: You can only swap one letter at a time.")
-                return False
+                return False, "Invalid Jump: You can only swap one letter at a time."
 
         # if a letter was dropped
-        elif len(start) > len(next_word):
+        elif len(current) > len(next_word):
             dropped_letters = 0
             start_index = 0
             next_index = 0
 
-            while start_index < len(start) and next_index < len(next_word):
-                if start[start_index] != next_word[next_index]:
+            while start_index < len(current) and next_index < len(next_word):
+                if current[start_index] != next_word[next_index]:
                     start_index += 1
                     dropped_letters += 1
                 else:
                     start_index += 1
                     next_index += 1
 
-            if dropped_letters == 0 and start_index == len(start) - 1:
+            if dropped_letters == 0 and start_index == len(current) - 1:
                 # Letter is dropped at the very end (valid scenario)
                 dropped_letters += 1
 
             elif dropped_letters != 1:
-                print("Invalid Jump: You can only drop one letter at a time.")
-                return False
+
+                return False, "Invalid Jump: You can only drop one letter at a time."
 
 
         # if a letter was added
-        elif len(start) < len(next_word):
+        elif len(current) < len(next_word):
             changed_letters = 0
             start_index = 0
             next_index = 0
-            while start_index < len(start) and next_index < len(next_word):
-                if start[start_index] != next_word[next_index]:
+            while start_index < len(current) and next_index < len(next_word):
+                if current[start_index] != next_word[next_index]:
                     next_index += 1
                     changed_letters += 1
                 else:
@@ -118,11 +126,10 @@ class Game:
                 changed_letters += 1
 
             if changed_letters != 1:
-                print("Invalid Jump: You can only add one letter at a time.")
-                return False
+                return False, "Invalid Jump: You can only add one letter at a time."
 
         # if all tests have been passed
-        return True
+        return True, ""
 
     def new_puzzle(self):
         puzzle = self.db.get_random_score_puzzle(5)
