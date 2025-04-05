@@ -1,316 +1,313 @@
 {% extends 'game/base.html' %}
 
 {% block extra_head %}
-<style>
-    :root {
-        --primary-color: #538d4e;
-        --secondary-color: #b59f3b;
-        --background-color: #121213;
-        --text-color: #ffffff;
-        --border-color: #3a3a3c;
-    }
+    <style>
+        :root {
+            --primary-color: #538d4e;
+            --secondary-color: #b59f3b;
+            --background-color: #121213;
+            --text-color: #ffffff;
+            --border-color: #3a3a3c;
+        }
 
-    body {
-        font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
-        background-color: var(--background-color);
-        color: var(--text-color);
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
+        body {
+            font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .game-container {
-        max-width: 500px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 20px;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-    }
-
-    .header {
-        text-align: center;
-        margin-bottom: 20px;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 10px;
-    }
-
-    .word-display {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        font-size: 1.5em;
-        font-weight: bold;
-    }
-
-    .word-grid {
-        display: grid;
-        grid-template-rows: repeat(10, 1fr);
-        gap: 5px;
-        margin-bottom: 20px;
-        overflow-y: auto;
-        flex: 1;
-        min-height: 0;
-    }
-
-    .word-row {
-        display: grid;
-        grid-template-columns: repeat(8, 1fr);
-        gap: 5px;
-    }
-
-    .letter-box {
-        aspect-ratio: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2em;
-        font-weight: bold;
-        border: 2px solid var(--border-color);
-        text-transform: uppercase;
-    }
-
-    .letter-box.correct {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-    }
-
-    .letter-box.present {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-    }
-
-    .input-container {
-        display: flex;
-        gap: 10px;
-        margin-top: auto;
-        padding: 10px 0;
-        background-color: var(--background-color);
-        position: sticky;
-        bottom: 0;
-    }
-
-    input[type="text"] {
-        flex: 1;
-        padding: 10px;
-        font-size: 1.2em;
-        background-color: var(--background-color);
-        color: var(--text-color);
-        border: 2px solid var(--border-color);
-        border-radius: 4px;
-    }
-
-    button {
-        padding: 10px 20px;
-        font-size: 1.2em;
-        background-color: var(--primary-color);
-        color: var(--text-color);
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        white-space: nowrap;
-    }
-
-    button:hover {
-        opacity: 0.9;
-    }
-
-    .error-message {
-        color: #ff4444;
-        text-align: center;
-        margin-bottom: 10px;
-        min-height: 20px;
-    }
-
-    .stats {
-        text-align: center;
-        margin: 10px 0;
-    }
-
-    .solution-container {
-        display: none;
-        margin-top: 20px;
-        padding: 15px;
-        background-color: var(--border-color);
-        border-radius: 4px;
-    }
-
-    .solution-container.visible {
-        display: block;
-    }
-
-    .solution-grid {
-        display: grid;
-        grid-template-rows: repeat(10, 1fr);
-        gap: 5px;
-        margin-top: 10px;
-    }
-
-    .solution-title {
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    @media (max-width: 600px) {
         .game-container {
-            padding: 10px;
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
         }
 
         .word-display {
-            font-size: 1.2em;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .word-grid {
+            display: grid;
+            grid-template-rows: repeat(10, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .word-row {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
         }
 
         .letter-box {
-            font-size: 1.5em;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            border: 2px solid var(--border-color);
+            text-transform: uppercase;
         }
 
-        button {
-            padding: 8px 12px;
-            font-size: 1em;
+        .letter-box.correct {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .letter-box.present {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
         }
 
         .input-container {
-            flex-wrap: wrap;
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            padding: 10px 0;
+            background-color: var(--background-color);
+            position: sticky;
+            bottom: 0;
         }
 
-        #delete-word {
+        input[type="text"] {
             flex: 1;
+            padding: 10px;
+            font-size: 1.2em;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
         }
-    }
-</style>
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .error-message {
+            color: #ff4444;
+            text-align: center;
+            margin-bottom: 10px;
+            min-height: 20px;
+        }
+
+        .stats {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .solution-container {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .solution-container.visible {
+            display: block;
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-rows: repeat(10, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .solution-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 10px;
+            }
+
+            .word-display {
+                font-size: 1.2em;
+            }
+
+            .letter-box {
+                font-size: 1.5em;
+            }
+
+            button {
+                padding: 8px 12px;
+                font-size: 1em;
+            }
+
+            .input-container {
+                flex-wrap: wrap;
+            }
+
+            #delete-word {
+                flex: 1;
+            }
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-<div class="game-container">
-    <div class="header">
-        <h1>Word Connect</h1>
+    <div class="game-container">
+        <div class="header">
+            <h1>Word Connect</h1>
+        </div>
+
+        <div class="word-display">
+            <div id="current-word">{{ start_word }}</div>
+            <div>→</div>
+            <div id="target-word">{{ end_word }}</div>
+        </div>
+
+        <div class="word-grid" id="word-grid">
+            <!-- Word rows will be added dynamically -->
+        </div>
+
+        <div class="error-message" id="error-message"></div>
+
+        <div class="input-container">
+            <input type="text" id="word-input" maxlength="8" placeholder="Enter your next word">
+            <button id="submit-word">Submit</button>
+            <button id="delete-word">Delete Word</button>
+        </div>
+
     </div>
 
-    <div class="word-display">
-        <div id="current-word">{{ start_word }}</div>
-        <div>→</div>
-        <div id="target-word">{{ end_word }}</div>
-    </div>
+    <script>
+        const startWord = "{{ start_word }}";
+        const endWord = "{{ end_word }}";
+        const solutionLength = "{{ solution_length }}";
+        const solution = "{{ solution }}";
+        let currentWord = startWord;
+        let moves = 0;
+        const wordGrid = document.getElementById('word-grid');
+        const errorMessage = document.getElementById('error-message');
+        const moveCount = document.getElementById('move-count');
 
-    <div class="word-grid" id="word-grid">
-        <!-- Word rows will be added dynamically -->
-    </div>
+        function createWordRow(word) {
+            const row = document.createElement('div');
+            row.className = 'word-row';
 
-    <div class="error-message" id="error-message"></div>
-
-    <div class="input-container">
-        <input type="text" id="word-input" maxlength="8" placeholder="Enter your next word">
-        <button id="submit-word">Submit</button>
-        <button id="delete-word">Delete Word</button>
-    </div>
-
-</div>
-
-<script>
-    const startWord = "{{ start_word }}";
-    const endWord = "{{ end_word }}";
-    const solutionLength = "{{ solution_length }}";
-    const solution = "{{ solution }}";
-    let currentWord = startWord;
-    let moves = 0;
-    const wordGrid = document.getElementById('word-grid');
-    const errorMessage = document.getElementById('error-message');
-    const moveCount = document.getElementById('move-count');
-
-    function createWordRow(word) {
-        const row = document.createElement('div');
-        row.className = 'word-row';
-
-        for (let i = 0; i < word.length; i++) {
-            const box = document.createElement('div');
-            box.className = 'letter-box';
-            if (i < word.length) {
-                box.textContent = word[i].toUpperCase();
+            for (let i = 0; i < word.length; i++) {
+                const box = document.createElement('div');
+                box.className = 'letter-box';
+                if (i < word.length) {
+                    box.textContent = word[i].toUpperCase();
+                }
+                row.appendChild(box);
             }
-            row.appendChild(box);
+
+            return row;
         }
 
-        return row;
-    }
+        function addWordToGrid(word) {
+            wordGrid.appendChild(createWordRow(word));
+        }
 
-    function addWordToGrid(word) {
-        wordGrid.appendChild(createWordRow(word));
-    }
+        function checkWordValidity(current, next) {
+            return fetch('/check-word/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({
+                    current_word: current,
+                    next_word: next
+                })
+            }).then(response => response.json());
+        }
 
-    function checkWordValidity(current, next) {
-        return fetch('/check-word/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: JSON.stringify({
-                current_word: current,
-                next_word: next
-            })
+        // WORD INPUT
+        document.getElementById('submit-word').addEventListener('click', async () => {
+            const input = document.getElementById('word-input');
+            const nextWord = input.value.toLowerCase().trim();
+
+
+            if (nextWord === '') {
+                errorMessage.textContent = 'Please enter a word';
+                return;
+            }
+
+            const result = await checkWordValidity(currentWord, nextWord);
+            console.log(result);
+            if (result.valid) {
+                currentWord = nextWord;
+                moves++;
+                addWordToGrid(nextWord);
+                input.value = '';
+                errorMessage.textContent = '';
+
+                if (currentWord === endWord) {
+                    errorMessage.textContent = `Congratulations! You solved it in ${moves} moves!`;
+                    input.disabled = true;
+                    document.getElementById('submit-word').disabled = true;
+                }
+            } else {
+                errorMessage.textContent = result.error;
+            }
+        });
+
+        // WORD DELETION
+        document.getElementById('delete-word').addEventListener('click', () => {
+            if (currentWord === startWord) {
+                errorMessage.textContent = 'Cannot delete the start word';
+            } else {
+                currentWord = startWord;
+                moves--;
+                wordGrid.innerHTML = '';
+                addWordToGrid(startWord);
+                errorMessage.textContent = '';
+            }
         })
-            .then(response => response.json());
-    }
 
-    // WORD INPUT
-    document.getElementById('submit-word').addEventListener('click', async () => {
-        const input = document.getElementById('word-input');
-        const nextWord = input.value.toLowerCase().trim();
 
-        if (nextWord === '') {
-            errorMessage.textContent = 'Please enter a word';
-            return;
-        }
+        // Initialize the grid with the start word
+        addWordToGrid(startWord);
 
-        const result = await checkWordValidity(currentWord, nextWord);
 
-        if (result.valid) {
-            currentWord = nextWord;
-            moves++;
-            moveCount.textContent = moves;
-            addWordToGrid(nextWord);
-            input.value = '';
-            errorMessage.textContent = '';
-
-            if (currentWord === endWord) {
-                errorMessage.textContent = `Congratulations! You solved it in ${moves} moves!`;
-                input.disabled = true;
-                document.getElementById('submit-word').disabled = true;
+        // Handle Enter key
+        document.getElementById('word-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('submit-word').click();
             }
-        } else {
-            errorMessage.textContent = result.error;
-        }
-    });
-
-    // WORD DELETION
-    document.getElementById('delete-word').addEventListener('click', () => {
-        if (currentWord === startWord) {
-            errorMessage.textContent = 'Cannot delete the start word';
-            return;
-        } else {
-            currentWord = startWord;
-            moves--;
-            moveCount.textContent = moves;
-            wordGrid.innerHTML = '';
-            addWordToGrid(startWord);
-            errorMessage.textContent = '';
-        }
-    })
-
-
-    // Initialize the grid with the start word
-    addWordToGrid(startWord);
-
-
-    // Handle Enter key
-    document.getElementById('word-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            document.getElementById('submit-word').click();
-        }
-    });
-</script>
+        });
+    </script>
 {% endblock %} 
