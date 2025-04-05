@@ -31,7 +31,7 @@ def game_view(request):
 def check_word(request):
     if request.method == 'POST':
         try:
-            word_data_path = Path(__file__).parent.parent.parent / 'data' / 'filtered_words.txt'
+            word_data_path = 'game/data/filtered_words.txt'
             game = Game(word_data_path)
             data = json.loads(request.body)
             current_word = data.get('current_word')
