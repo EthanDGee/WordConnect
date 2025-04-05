@@ -134,6 +134,9 @@ class Game:
         while not_solved:
             print("Enter your next guess: ", end="")
             guess = input().lower()
+            if guess.lower() == "b":
+                self.back_track()
+
             if self.valid_jump(self.current_word, guess):
                 print("Valid Jump")
                 self.current_word = guess
@@ -155,6 +158,12 @@ class Game:
         print(f"The Computer guessed the word in {puzzle.score} guesses.")
         print(puzzle.format_solution())
 
+    def back_track(self):
+        if self.current_word == self.start_word:
+            print("You can't go back any further.")
+        else:
+            self.current_word = self.start_word
+            print(f"Backtracked to {self.start_word}")
 
 if __name__ == "__main__":
 
