@@ -102,8 +102,9 @@ class TestGame(unittest.TestCase):
 
     def test_back_track(self):
         # Successful
-        self.game.current_word = "party"
-        self.game.start_word = "pasted"
+        self.game.start_word = "party"
+        self.game.current_word = "pasted"
+        self.game.goal_word = "plasted"
         self.game.word_sequence = ["part", "pact", "paste", "pasted"]
         self.assertTrue(self.game.back_track())
         self.assertEqual(self.game.current_word, "paste")
@@ -119,7 +120,6 @@ class TestGame(unittest.TestCase):
 
         # we are now back at the start, and the test should fail.
         self.assertFalse(self.game.back_track())
-
 
         # same word case
         self.game.current_word = "doggy"

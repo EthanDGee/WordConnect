@@ -37,9 +37,8 @@ class Game:
         print("You can only change one letter at a time. You can swap a letter, add a letter, or remove a letter.")
         print(" If you want to quit, type 'q'. Try your best to tie the computer (you will not beat it)")
 
-    @staticmethod
-    def format_word_sequence(guesses):
-        return " -> ".join(guesses)
+    def format_word_sequence(self):
+        return self.start_word + " -> ".join(self.word_sequence)
 
     def valid_jump(self, start: str, next_word: str):
         # a function that determines if a users word is a valid jump from the current word
@@ -144,8 +143,6 @@ class Game:
                 self.word_sequence.append(guess)
                 # check for win
                 if self.current_word == self.goal_word:
-                    # insert start word at guess head
-                    self.word_sequence.insert(0, puzzle.start)
                     not_solved = False
             elif guess == "q":
                 print("Goodbye!")
@@ -155,18 +152,28 @@ class Game:
 
         print("You won!")
         print(f"You guessed the word in {len(self.word_sequence)} guesses.")
-        print(self.format_word_sequence(self.word_sequence))
+        print(self.format_word_sequence())
         print(f"The Computer guessed the word in {puzzle.score} guesses.")
         print(puzzle.format_solution())
 
     def back_track(self):
-        if self.current_word == self.start_word:
+        if len(self.word_sequence) == 0:
             print("You can't go back any further.")
             return False
-        else:
-            self.current_word = self.word_sequence.pop()
-            print(f"Backtracked to {self.start_word}")
+        elif len(self.word_sequence) == 1:
+            # the starting word is not a part of the word sequence and as result we cant get its word from the sequence
+            self.word_sequence.pop()
+            self.current_word = self.start_word
+            print(f"Backtracked to {self.current_word}")
             return True
+        else:
+            # remove last word
+            self.word_sequence.pop()
+            # set current word to last of word sequence
+            self.current_word = self.word_sequence[-1]
+            print(f"Backtracked to {self.current_word}")
+            return True
+
 
 if __name__ == "__main__":
 
