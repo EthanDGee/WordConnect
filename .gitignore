@@ -6,4 +6,6 @@ data/
 *.iml*.xml
 *.toc
 *.zip
-*.html
+*.sqlite3
+__pycache__/
+migrations/
