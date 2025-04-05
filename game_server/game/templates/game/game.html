@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    :root {
+        --primary-color: #538d4e;
+        --secondary-color: #b59f3b;
+        --background-color: #121213;
+        --text-color: #ffffff;
+        --border-color: #3a3a3c;
+    }
+
+    body {
+        font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .game-container {
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+    }
+
+    .word-display {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+
+    .word-grid {
+        display: grid;
+        grid-template-rows: repeat(10, 1fr);
+        gap: 5px;
+        margin-bottom: 20px;
+    }
+
+    .word-row {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 5px;
+    }
+
+    .letter-box {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2em;
+        font-weight: bold;
+        border: 2px solid var(--border-color);
+        text-transform: uppercase;
+    }
+
+    .letter-box.correct {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .letter-box.present {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+
+    .input-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        font-size: 1.2em;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        border: 2px solid var(--border-color);
+        border-radius: 4px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 1.2em;
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    .error-message {
+        color: #ff4444;
+        text-align: center;
+        margin-bottom: 10px;
+        min-height: 20px;
+    }
+
+    .stats {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="game-container">
+    <div class="header">
+        <h1>Word Connect</h1>
+        <p>Transform <span id="start-word">{{ start_word }}</span> into <span id="end-word">{{ end_word }}</span></p>
+        <p>Optimal solution: {{ solution_length }} moves</p>
+    </div>
+
+    <div class="word-display">
+        <div id="current-word">{{ start_word }}</div>
+        <div>→</div>
+        <div id="target-word">{{ end_word }}</div>
+    </div>
+
+    <div class="word-grid" id="word-grid">
+        <!-- Word rows will be added dynamically -->
+    </div>
+
+    <div class="error-message" id="error-message"></div>
+
+    <div class="input-container">
+        <input type="text" id="word-input" maxlength="8" placeholder="Enter your next word">
+        <button id="submit-word">Submit</button>
+    </div>
+
+    <div class="stats">
+        <p>Moves: <span id="move-count">0</span></p>
+    </div>
+</div>
+
+<script>
+    const startWord = "{{ start_word }}";
+    const endWord = "{{ end_word }}";
+    let currentWord = startWord;
+    let moves = 0;
+    const wordGrid = document.getElementById('word-grid');
+    const errorMessage = document.getElementById('error-message');
+    const moveCount = document.getElementById('move-count');
+
+    function createWordRow(word) {
+        const row = document.createElement('div');
+        row.className = 'word-row';
+
+        for (let i = 0; i < 8; i++) {
+            const box = document.createElement('div');
+            box.className = 'letter-box';
+            if (i < word.length) {
+                box.textContent = word[i].toUpperCase();
+            }
+            row.appendChild(box);
+        }
+
+        return row;
+    }
+
+    function addWordToGrid(word) {
+        wordGrid.appendChild(createWordRow(word));
+    }
+
+    function checkWordValidity(current, next) {
+        return fetch('/check-word/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                current_word: current,
+                next_word: next
+            })
+        })
+            .then(response => response.json());
+    }
+
+    document.getElementById('submit-word').addEventListener('click', async () => {
+        const input = document.getElementById('word-input');
+        const nextWord = input.value.toLowerCase().trim();
+
+        if (nextWord === '') {
+            errorMessage.textContent = 'Please enter a word';
+            return;
+        }
+
+        const result = await checkWordValidity(currentWord, nextWord);
+
+        if (result.valid) {
+            currentWord = nextWord;
+            moves++;
+            moveCount.textContent = moves;
+            addWordToGrid(nextWord);
+            input.value = '';
+            errorMessage.textContent = '';
+
+            if (currentWord === endWord) {
+                errorMessage.textContent = `Congratulations! You solved it in ${moves} moves!`;
+                input.disabled = true;
+                document.getElementById('submit-word').disabled = true;
+            }
+        } else {
+            errorMessage.textContent = result.error;
+        }
+    });
+
+    // Initialize the grid with the start word
+    addWordToGrid(startWord);
+
+    // Handle Enter key
+    document.getElementById('word-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('submit-word').click();
+        }
+    });
+</script>
+{% endblock %} 
