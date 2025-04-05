@@ -104,7 +104,7 @@ class TestGame(unittest.TestCase):
         # Successful
         self.game.current_word = "party"
         self.game.start_word = "pasted"
-        self.game.word_sequence = ["party", "part", "pact", "paste", "pasted"]
+        self.game.word_sequence = ["part", "pact", "paste", "pasted"]
         self.assertTrue(self.game.back_track())
         self.assertEqual(self.game.current_word, "paste")
         # keep iterating backward through the word_sequence
