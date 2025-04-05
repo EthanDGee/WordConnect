@@ -14,17 +14,22 @@
         font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
         background-color: var(--background-color);
         color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        padding: 20px;
     }
 
     .game-container {
         max-width: 500px;
         width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
     }
 
     .header {
@@ -47,6 +52,9 @@
         grid-template-rows: repeat(10, 1fr);
         gap: 5px;
         margin-bottom: 20px;
+        overflow-y: auto;
+        flex: 1;
+        min-height: 0;
     }
 
     .word-row {
@@ -79,7 +87,11 @@
     .input-container {
         display: flex;
         gap: 10px;
-        margin-bottom: 20px;
+        margin-top: auto;
+        padding: 10px 0;
+        background-color: var(--background-color);
+        position: sticky;
+        bottom: 0;
     }
 
     input[type="text"] {
@@ -100,6 +112,7 @@
         border: none;
         border-radius: 4px;
         cursor: pointer;
+        white-space: nowrap;
     }
 
     button:hover {
@@ -115,7 +128,58 @@
 
     .stats {
         text-align: center;
+        margin: 10px 0;
+    }
+
+    .solution-container {
+        display: none;
         margin-top: 20px;
+        padding: 15px;
+        background-color: var(--border-color);
+        border-radius: 4px;
+    }
+
+    .solution-container.visible {
+        display: block;
+    }
+
+    .solution-grid {
+        display: grid;
+        grid-template-rows: repeat(10, 1fr);
+        gap: 5px;
+        margin-top: 10px;
+    }
+
+    .solution-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+        .game-container {
+            padding: 10px;
+        }
+
+        .word-display {
+            font-size: 1.2em;
+        }
+
+        .letter-box {
+            font-size: 1.5em;
+        }
+
+        button {
+            padding: 8px 12px;
+            font-size: 1em;
+        }
+
+        .input-container {
+            flex-wrap: wrap;
+        }
+
+        #delete-word {
+            flex: 1;
+        }
     }
 </style>
 {% endblock %}
@@ -124,7 +188,6 @@
 <div class="game-container">
     <div class="header">
         <h1>Word Connect</h1>
-        <p>Optimal solution: {{ score }} moves</p>
     </div>
 
     <div class="word-display">
@@ -233,7 +296,6 @@
 
     // WORD DELETION
     document.getElementById('delete-word').addEventListener('click', () => {
-
         if (currentWord === startWord) {
             errorMessage.textContent = 'Cannot delete the start word';
             return;
