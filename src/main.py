@@ -11,6 +11,9 @@ class Game:
     def __init__(self, word_list_path):
         self.possible_words = self.load_words(word_list_path)
         self.db = Database("game_data.db")
+        self.start_word = "filler-start-word"
+        self.current_word = "filler-start-word"
+        self.goal_word = "filler-goal-word"
 
     @staticmethod
     def load_words(word_list_path):
@@ -124,17 +127,19 @@ class Game:
         not_solved = True
         print(f"New Puzzle - {puzzle.start} -> {puzzle.goal}")
         print(f"Score: {puzzle.score}")
-        current_word = puzzle.start
+        self.start_word = puzzle.start
+        self.current_word = puzzle.start
+        self.goal_word = puzzle.goal
         user_guesses = []
         while not_solved:
             print("Enter your next guess: ", end="")
             guess = input().lower()
-            if self.valid_jump(current_word, guess):
+            if self.valid_jump(self.current_word, guess):
                 print("Valid Jump")
-                current_word = guess
+                self.current_word = guess
                 user_guesses.append(guess)
                 # check for win
-                if current_word == puzzle.goal:
+                if self.current_word == self.goal_word:
                     # insert start word at guess head
                     user_guesses.insert(0, puzzle.start)
                     not_solved = False
@@ -143,7 +148,6 @@ class Game:
                 break
             else:
                 print("Invalid Jump")
-
 
         print("You won!")
         print(f"You guessed the word in {len(user_guesses)} guesses.")
@@ -159,4 +163,4 @@ if __name__ == "__main__":
 
     # Initiate Game Loop
     while True:
-       game.new_puzzle()
+        game.new_puzzle()
