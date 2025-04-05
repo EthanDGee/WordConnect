@@ -50,8 +50,8 @@ class WordFilter:
                         print(f"Valid Word - {word}")
                         filter_counts["valid"] += 1
                         writer.write(word + '\n')
-            # add in i and a
-            writer.write("i\na")
+                # add in i and a
+                writer.write("i\na")
         except IOError as e:
             print(f"An IOError occurred: {e}")
 
