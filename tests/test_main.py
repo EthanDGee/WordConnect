@@ -100,6 +100,34 @@ class TestGame(unittest.TestCase):
         self.assertFalse(self.game.valid_jump("mitten", "5mitten"))
         self.assertFalse(self.game.valid_jump("doggy", "doggy!"))
 
+    def test_back_track(self):
+        # Successful
+        self.game.current_word = "party"
+        self.game.start_word = "pasted"
+        self.game.word_sequence = ["party", "part", "pact", "paste", "pasted"]
+        self.assertTrue(self.game.back_track())
+        self.assertEqual(self.game.current_word, "paste")
+        # keep iterating backward through the word_sequence
+        self.assertTrue(self.game.back_track())
+        self.assertEqual(self.game.current_word, "pact")
+
+        self.assertTrue(self.game.back_track())
+        self.assertEqual(self.game.current_word, "part")
+
+        self.assertTrue(self.game.back_track())
+        self.assertEqual(self.game.current_word, "party")
+
+        # we are now back at the start, and the test should fail.
+        self.assertFalse(self.game.back_track())
+
+
+        # same word case
+        self.game.current_word = "doggy"
+        self.game.start_word = "doggy"
+        self.assertFalse(self.game.back_track())
+        self.assertEqual(self.game.current_word, "doggy")
+
+
 
 if __name__ == "__main__":
     unittest.main()
