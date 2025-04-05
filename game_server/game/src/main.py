@@ -1,5 +1,6 @@
 from .database import Database
-
+from django.conf import settings
+from pathlib import Path
 
 def display_word_sequence(word_path):
     for word in word_path:
@@ -8,8 +9,12 @@ def display_word_sequence(word_path):
 
 
 class Game:
-    def __init__(self, word_list_path):
-        self.possible_words = self.load_words(word_list_path)
+    def __init__(self):
+
+        # get path to words
+        file_path = Path(settings.BASE_DIR) / 'game' / 'data' / 'filtered_words.txt'
+
+        self.possible_words = self.load_words(file_path)
         self.db = Database("game_data.db")
         self.start_word = "filler-start-word"
         self.current_word = "filler-start-word"
@@ -18,12 +23,12 @@ class Game:
 
     @staticmethod
     def load_words(word_list_path):
-        loaded_words = []
+        loaded_words = set()
         try:
             with open(word_list_path, "r") as reader:
                 for line in reader:
                     word = line.strip()
-                    loaded_words.append(word)
+                    loaded_words.add(word)
 
             return loaded_words
         except IOError as e:
@@ -195,7 +200,7 @@ class Game:
 
 if __name__ == "__main__":
 
-    game = Game("../data/filtered_words.txt")
+    game = Game()
     game.tutorial()
 
     # Initiate Game Loop
