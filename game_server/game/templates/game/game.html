@@ -194,9 +194,10 @@
         <div class="help-content">
             <span class="close-button" id="closeHelp">&times;</span>
             <h3>How to Play Word Connect</h3>
-            <p>Your objective is to transform one word into another using the fewest possible moves. By changing only
-                one
-                letter at a time.</p>
+            <p>
+                Your objective is to transform one word into another using the fewest possible moves. By changing only
+                one letter at a time.
+            </p>
             <p><strong>Rules:</strong></p>
             <ul>
                 <li><strong>Swap one letter:</strong> e.g., <strong>C</strong>at → <strong>B</strong>at</li>
@@ -313,13 +314,6 @@
         <div class="settings-content">
             <span class="close-button" id="closeSettings">&times;</span>
             <h3>Settings</h3>
-
-            {#            <select name="difficulty" id="difficulty">#}
-            {#                <option value="3">Beginner</option>#}
-            {#                <option value="5">Normal</option>#}
-            {#                <option value="7">Advanced</option>#}
-            {#                <option value="9">Extreme</option>#}
-            {#            </select>#}
             <div class="difficulty-selector">
                 <h4>Difficulty</h4>
                 <div class="difficulty-options">
@@ -354,169 +348,168 @@
     </div>
 
 
-<style>
-    .gear-icon {
-        color: var(--text-color, #f0f0f0);
-        font-weight: bold;
-        font-size: 22px;
-    }
+    <style>
+        .gear-icon {
+            color: var(--text-color, #f0f0f0);
+            font-weight: bold;
+            font-size: 22px;
+        }
 
-    .settings-button {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        width: 40px;
-        height: 40px;
-        background-color: #444;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-        transition: transform 0.2s ease;
-    }
+        .settings-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            background-color: #444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease;
+        }
 
-    .settings-button:hover {
-        transform: rotate(45deg);
-    }
+        .settings-button:hover {
+            transform: rotate(45deg);
+        }
 
 
-    .settings-popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #3d3d3d;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.5);
-        z-index: 1000;
-        max-width: 400px;
-        width: 90%;
-    }
+        .settings-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #3d3d3d;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            max-width: 400px;
+            width: 90%;
+        }
 
-    .settings-popup.visible {
-        display: block;
-    }
+        .settings-popup.visible {
+            display: block;
+        }
 
-    .settings-content {
-        padding: 20px;
-        position: relative;
-    }
+        .settings-content {
+            padding: 20px;
+            position: relative;
+        }
 
-    .close-button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 24px;
-        cursor: pointer;
-        color: #666;
-    }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
 
-    .difficulty-options {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
+        .difficulty-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    .difficulty-option {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        background-color: #303030;
-    }
+        .difficulty-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            background-color: #303030;
+        }
 
-    .difficulty-option input[type="radio"] {
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        border: 2px solid #ddd;
-        outline: none;
-    }
+        .difficulty-option input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            outline: none;
+        }
 
-    .difficulty-option input[type="radio"]:checked {
-        background-color: #549159;
-        border-color: #549159;
-    }
+        .difficulty-option input[type="radio"]:checked {
+            background-color: #549159;
+            border-color: #549159;
+        }
 
-    .difficulty-option:hover {
-        background-color: #3f3f3f;
-    }
+        .difficulty-option:hover {
+            background-color: #3f3f3f;
+        }
 
-    .difficulty-label {
-        font-weight: bold;
-    }
+        .difficulty-label {
+            font-weight: bold;
+        }
 
-    .difficulty-description {
-        font-size: 0.8em;
-        color: #999;
-        margin-left: auto;
-    }
+        .difficulty-description {
+            font-size: 0.8em;
+            color: #999;
+            margin-left: auto;
+        }
 
-    .apply-button {
-        display: flex;
-        justify-content: flex-end;
-        color: #549159;
-    }
+        .apply-button {
+            display: flex;
+            justify-content: flex-end;
+            color: #549159;
+        }
 
-    .apply-button button {
-        padding: 10px 20px;
-        font-size: 1.2em;
-        background-color: #549159;
-    }
-</style>
+        .apply-button button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #549159;
+        }
+    </style>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const settingsButton = document.getElementById('settingsButton');
-        const settingsPopup = document.getElementById('settingsPopup');
-        const closeSettings = document.getElementById('closeSettings');
-        const difficultyOptions = document.querySelectorAll('input[name="difficulty"]');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const settingsButton = document.getElementById('settingsButton');
+            const settingsPopup = document.getElementById('settingsPopup');
+            const closeSettings = document.getElementById('closeSettings');
+            const difficultyOptions = document.querySelectorAll('input[name="difficulty"]');
 
-        // Load saved difficulty
-        const savedDifficulty = localStorage.getItem('gameDifficulty') || '5';
-        document.querySelector(`input[value="${savedDifficulty}"]`).checked = true;
 
-        // Settings popup toggle
-        settingsButton.addEventListener('click', function () {
-            settingsPopup.classList.add('visible');
-        });
+            // Load saved difficulty
+            const savedDifficulty = localStorage.getItem('gameDifficulty') || '5';
+            document.querySelector(`input[value="${savedDifficulty}"]`).checked = true;
 
-        closeSettings.addEventListener('click', function () {
-            settingsPopup.classList.remove('visible');
-        });
+            // Settings popup toggle
+            settingsButton.addEventListener('click', function () {
+                settingsPopup.classList.add('visible');
+            });
 
-        // Save difficulty on selection
-        difficultyOptions.forEach(option => {
-            option.addEventListener('change', function() {
-                const selectedDifficulty = this.value;
-                localStorage.setItem('gameDifficulty', selectedDifficulty);
+            closeSettings.addEventListener('click', function () {
+                settingsPopup.classList.remove('visible');
+            });
 
-                // Optionally, dispatch a custom event to update game difficulty
-                const difficultyChangeEvent = new CustomEvent('difficultyChanged', {
-                    detail: { difficulty: selectedDifficulty }
+            // Save difficulty on selection
+            difficultyOptions.forEach(option => {
+                option.addEventListener('change', function () {
+                    const selectedDifficulty = this.value;
+                    localStorage.setItem('gameDifficulty', selectedDifficulty);
+
+                    // Optionally, dispatch a custom event to update game difficulty
+                    const difficultyChangeEvent = new CustomEvent('difficultyChanged', {
+                        detail: {difficulty: selectedDifficulty}
+                    });
+                    window.dispatchEvent(difficultyChangeEvent);
                 });
-                window.dispatchEvent(difficultyChangeEvent);
+            });
+
+            // Close popup when clicking outside of it
+            window.addEventListener('click', function (event) {
+                if (event.target === settingsPopup && !settingsPopup.contains(event.target)) {
+                    settingsPopup.classList.remove('visible');
+                }
             });
         });
-
-        // Close popup when clicking outside of it
-        window.addEventListener('click', function (event) {
-            if (event.target === settingsPopup && !settingsPopup.contains(event.target)) {
-                settingsPopup.classList.remove('visible');
-            }
-        });
-    });
-</script>
-
-
+    </script>
 
     <div class="game-container">
         <div class="header">
