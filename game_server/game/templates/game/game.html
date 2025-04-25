@@ -255,6 +255,20 @@
                 flex: 1;
             }
         }
+
+        .view-score-button {
+            display: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            align-self: center;
+            width: 100%;
+        }
     </style>
 {% endblock %}
 
@@ -636,6 +650,9 @@
             <button id="submit-word">Submit</button>
             <button id="delete-word">Delete Word</button>
         </div>
+        <div>
+            <button class="view-score-button" id="viewScoreButton"> View Score </button>
+        </div>
 
     </div>
 
@@ -752,6 +769,12 @@
                     input.disabled = true;
                     document.getElementById('submit-word').disabled = true;
 
+                    //hide the game input fields, and add a view score button that opens solution popup
+
+                    document.getElementById('submit-word').style.display = 'none';
+                    document.getElementById('word-input').style.display = 'none';
+                    document.getElementById('delete-word').style.display = 'none';
+
                     // Show the solution popup
                     window.showSolutionPopup();
                 }
@@ -787,8 +810,15 @@
         window.addEventListener('click', function (event) {
             if (event.target === solutionPopup) {
                 solutionPopup.classList.remove('visible');
+                // show view score button so user can go back to pop up
+                document.getElementById('viewScoreButton').style.display = 'block';
+
             }
         });
+
+        document.getElementById('viewScoreButton').addEventListener('click', () => {
+            showSolutionPopup();
+        })
 
         // Initialize the grid with the start word
         addWordToGrid(startWord);
