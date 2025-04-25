@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from game.src.database import Database
 from game.src.main import Game
 import json
-from pathlib import Path
 
 
 def get_random_puzzle(difficulty_level: int = 5):
@@ -18,11 +17,20 @@ def get_random_puzzle(difficulty_level: int = 5):
     }
 
 
-def game_view(request):
-    try:
-        difficulty_level = (request.GET.get('difficulty', 5))
-    except ValueError:
+def game_view(request, difficulty: str = "normal"):
+
+
+    if difficulty is None:
         difficulty_level = 5
+    else:
+
+        difficulty_scores = {
+            "beginner": 3,
+            "normal": 5,
+            "advanced": 7,
+            "extreme": 9,
+        }
+        difficulty_level = difficulty_scores[difficulty]
 
     puzzle = get_random_puzzle(difficulty_level)
     print(puzzle)
@@ -40,6 +48,7 @@ def check_word(request):
         data = json.loads(request.body)
         current_word = data.get('current_word')
         next_word = data.get('next_word')
+        print(f"{current_word} -> {next_word}")
         valid, error = game.valid_jump(current_word, next_word)
         return JsonResponse({'valid': valid, 'error': error})
     return JsonResponse({'valid': False, 'error': 'Invalid request method'})

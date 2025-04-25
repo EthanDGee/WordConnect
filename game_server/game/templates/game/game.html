@@ -318,31 +318,29 @@
                 <h4>Difficulty</h4>
                 <div class="difficulty-options">
                     <label class="difficulty-option">
-                        <input type="radio" name="difficulty" value="3" id="beginnerDifficulty">
+                        <input type="radio" name="difficulty" value="beginner" id="beginnerDifficulty">
                         <span class="difficulty-label">Beginner</span>
                         <span class="difficulty-description">Easy, slow-paced gameplay</span>
                     </label>
                     <label class="difficulty-option">
-                        <input type="radio" name="difficulty" value="5" id="normalDifficulty" checked>
+                        <input type="radio" name="difficulty" value="normal" id="normalDifficulty" checked>
                         <span class="difficulty-label">Normal</span>
                         <span class="difficulty-description">Balanced challenge</span>
                     </label>
                     <label class="difficulty-option">
-                        <input type="radio" name="difficulty" value="7" id="advancedDifficulty">
+                        <input type="radio" name="difficulty" value="advanced" id="advancedDifficulty">
                         <span class="difficulty-label">Advanced</span>
                         <span class="difficulty-description">Challenging gameplay</span>
                     </label>
                     <label class="difficulty-option">
-                        <input type="radio" name="difficulty" value="9" id="extremeDifficulty">
+                        <input type="radio" name="difficulty" value="extreme" id="extremeDifficulty">
                         <span class="difficulty-label">Extreme</span>
                         <span class="difficulty-description">Maximum difficulty</span>
                     </label>
                 </div>
             </div>
 
-            <div class="apply-button">
-                <button id="applySettings">Apply</button>
-            </div>
+
 
         </div>
     </div>
@@ -467,49 +465,58 @@
         }
     </style>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const settingsButton = document.getElementById('settingsButton');
-            const settingsPopup = document.getElementById('settingsPopup');
-            const closeSettings = document.getElementById('closeSettings');
-            const difficultyOptions = document.querySelectorAll('input[name="difficulty"]');
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const settingsButton = document.getElementById('settingsButton');
+        const settingsPopup = document.getElementById('settingsPopup');
+        const closeSettings = document.getElementById('closeSettings');
+        const difficultyOptions = document.querySelectorAll('input[name="difficulty"]');
 
+        // Function to get difficulty from localStorage
+        function getDifficultyFromStorage() {
+            const savedDifficulty = localStorage.getItem('gameDifficulty');
+            return savedDifficulty ? parseInt(savedDifficulty) : 5; // Default to Normal
+        }
 
-            // Load saved difficulty
-            const savedDifficulty = localStorage.getItem('gameDifficulty') || '5';
-            document.querySelector(`input[value="${savedDifficulty}"]`).checked = true;
+        // Set initial difficulty on page load
+        const initialDifficulty = getDifficultyFromStorage();
+        const initialDifficultyRadio = document.querySelector(`input[name="difficulty"][value="${initialDifficulty}"]`);
+        if (initialDifficultyRadio) {
+            initialDifficultyRadio.checked = true;
+        }
 
-            // Settings popup toggle
-            settingsButton.addEventListener('click', function () {
-                settingsPopup.classList.add('visible');
-            });
+        // Settings popup toggle
+        settingsButton.addEventListener('click', function () {
+            settingsPopup.classList.add('visible');
+        });
 
-            closeSettings.addEventListener('click', function () {
-                settingsPopup.classList.remove('visible');
-            });
+        closeSettings.addEventListener('click', function () {
+            settingsPopup.classList.remove('visible');
+        });
 
-            // Save difficulty on selection
-            difficultyOptions.forEach(option => {
-                option.addEventListener('change', function () {
-                    const selectedDifficulty = this.value;
-                    localStorage.setItem('gameDifficulty', selectedDifficulty);
+        // Save difficulty on selection and redirect to game with difficulty
+        difficultyOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                const selectedDifficulty = this.value;
 
-                    // Optionally, dispatch a custom event to update game difficulty
-                    const difficultyChangeEvent = new CustomEvent('difficultyChanged', {
-                        detail: {difficulty: selectedDifficulty}
-                    });
-                    window.dispatchEvent(difficultyChangeEvent);
-                });
-            });
+                // Save to localStorage
+                localStorage.setItem('gameDifficulty', selectedDifficulty);
 
-            // Close popup when clicking outside of it
-            window.addEventListener('click', function (event) {
-                if (event.target === settingsPopup && !settingsPopup.contains(event.target)) {
-                    settingsPopup.classList.remove('visible');
-                }
+                // Redirect to game with selected difficulty
+                window.location.href = `${selectedDifficulty}`;
             });
         });
-    </script>
+
+        // Close popup when clicking outside of it
+        window.addEventListener('click', function (event) {
+            if (event.target === settingsPopup) {
+                settingsPopup.classList.remove('visible');
+            }
+        });
+    });
+</script>
+
+
 
     <div class="game-container">
         <div class="header">
