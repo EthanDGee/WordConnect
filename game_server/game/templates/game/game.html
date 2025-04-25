@@ -186,6 +186,8 @@
 
 {% block content %}
 
+    {# Help Button  #}
+
     <div class="help-button" id="helpButton">
         <span class="question-mark">?</span>
     </div>
@@ -206,7 +208,6 @@
             </ul>
         </div>
     </div>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -306,6 +307,8 @@
         }
     </style>
 
+    {# Setting Button #}
+
     <div class="settings-button" id="settingsButton">
         <span class="gear-icon">⚙️</span>
     </div>
@@ -319,8 +322,8 @@
                 <div class="difficulty-options">
                     <label class="difficulty-option">
                         <input type="radio" name="difficulty" value="beginner" id="beginnerDifficulty">
-                        <span class="difficulty-label">Beginner</span>
-                        <span class="difficulty-description">Easy, slow-paced gameplay</span>
+                        <span class="difficulty-label">Easy</span>
+                        <span class="difficulty-description">Great for beginners</span>
                     </label>
                     <label class="difficulty-option">
                         <input type="radio" name="difficulty" value="normal" id="normalDifficulty" checked>
@@ -341,10 +344,8 @@
             </div>
 
 
-
         </div>
     </div>
-
 
     <style>
         .gear-icon {
@@ -452,71 +453,60 @@
             margin-left: auto;
         }
 
-        .apply-button {
-            display: flex;
-            justify-content: flex-end;
-            color: #549159;
-        }
-
-        .apply-button button {
-            padding: 10px 20px;
-            font-size: 1.2em;
-            background-color: #549159;
-        }
     </style>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const settingsButton = document.getElementById('settingsButton');
-        const settingsPopup = document.getElementById('settingsPopup');
-        const closeSettings = document.getElementById('closeSettings');
-        const difficultyOptions = document.querySelectorAll('input[name="difficulty"]');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const settingsButton = document.getElementById('settingsButton');
+            const settingsPopup = document.getElementById('settingsPopup');
+            const closeSettings = document.getElementById('closeSettings');
+            const difficultyOptions = document.querySelectorAll('input[name="difficulty"]');
 
-        // Function to get difficulty from localStorage
-        function getDifficultyFromStorage() {
-            const savedDifficulty = localStorage.getItem('gameDifficulty');
-            return savedDifficulty ? parseInt(savedDifficulty) : 5; // Default to Normal
-        }
+            // Function to get difficulty from localStorage
+            function getDifficultyFromStorage() {
+                const savedDifficulty = localStorage.getItem('gameDifficulty');
+                return savedDifficulty ? parseInt(savedDifficulty) : 5; // Default to Normal
+            }
 
-        // Set initial difficulty on page load
-        const initialDifficulty = getDifficultyFromStorage();
-        const initialDifficultyRadio = document.querySelector(`input[name="difficulty"][value="${initialDifficulty}"]`);
-        if (initialDifficultyRadio) {
-            initialDifficultyRadio.checked = true;
-        }
+            // Set initial difficulty on page load
+            const initialDifficulty = getDifficultyFromStorage();
+            const initialDifficultyRadio = document.querySelector(`input[name="difficulty"][value="${initialDifficulty}"]`);
+            if (initialDifficultyRadio) {
+                initialDifficultyRadio.checked = true;
+            }
 
-        // Settings popup toggle
-        settingsButton.addEventListener('click', function () {
-            settingsPopup.classList.add('visible');
-        });
+            // Settings popup toggle
+            settingsButton.addEventListener('click', function () {
+                settingsPopup.classList.add('visible');
+            });
 
-        closeSettings.addEventListener('click', function () {
-            settingsPopup.classList.remove('visible');
-        });
+            closeSettings.addEventListener('click', function () {
+                settingsPopup.classList.remove('visible');
+            });
 
-        // Save difficulty on selection and redirect to game with difficulty
-        difficultyOptions.forEach(option => {
-            option.addEventListener('change', function() {
-                const selectedDifficulty = this.value;
+            // Save difficulty on selection and redirect to game with difficulty
+            difficultyOptions.forEach(option => {
+                option.addEventListener('change', function () {
+                    const selectedDifficulty = this.value;
 
-                // Save to localStorage
-                localStorage.setItem('gameDifficulty', selectedDifficulty);
+                    // Save to localStorage
+                    localStorage.setItem('gameDifficulty', selectedDifficulty);
 
-                // Redirect to game with selected difficulty
-                window.location.href = `${selectedDifficulty}`;
+                    // Redirect to game with selected difficulty
+                    window.location.href = `${selectedDifficulty}`;
+                });
+            });
+
+            // Close popup when clicking outside of it
+            window.addEventListener('click', function (event) {
+                if (event.target === settingsPopup) {
+                    settingsPopup.classList.remove('visible');
+                }
             });
         });
+    </script>
 
-        // Close popup when clicking outside of it
-        window.addEventListener('click', function (event) {
-            if (event.target === settingsPopup) {
-                settingsPopup.classList.remove('visible');
-            }
-        });
-    });
-</script>
-
-
+    {# Game #}
 
     <div class="game-container">
         <div class="header">
@@ -655,4 +645,5 @@
             }
         });
     </script>
+
 {% endblock %} 
