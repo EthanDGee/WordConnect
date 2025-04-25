@@ -134,9 +134,11 @@
         .solution-container {
             display: none;
             margin-top: 20px;
+            margin-left: 15px;
+            margin-right: 15px;
             padding: 15px;
             background-color: var(--border-color);
-            border-radius: 4px;
+            border-radius: 10px;
         }
 
         .solution-container.visible {
@@ -177,7 +179,7 @@
             background-color: var(--background-color);
             border: 2px solid var(--border-color);
             border-radius: 8px;
-            padding: 20px;
+            padding: 10%;
             max-width: 90%;
             max-height: 90%;
             overflow-y: auto;
@@ -195,6 +197,7 @@
             flex-direction: row;
             gap: 20px;
             margin: 20px 0;
+            width: 100%;
         }
 
         .solution-column {
@@ -205,6 +208,18 @@
         .solution-column h3 {
             text-align: center;
             margin-top: 0;
+        }
+
+        .solution-word {
+            align-self: center;
+            width: 100%;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .solution-word > text {
+
         }
 
         #new-game-button {
@@ -225,7 +240,7 @@
 
         @media (max-width: 768px) {
             .solutions-container {
-                flex-direction: column;
+                flex-direction: row;
             }
         }
 
@@ -598,6 +613,7 @@
     <!-- Solution Popup -->
     <div class="solution-popup" id="solutionPopup">
         <div class="solution-content">
+            <span class="close-button" id="closeSolution">&times;</span>
             <h2>Puzzle Solved!</h2>
             <div class="solutions-container">
                 <div class="solution-column">
@@ -607,7 +623,7 @@
                     </div>
                 </div>
                 <div class="solution-column">
-                    <h3>Computer Solution</h3>
+                    <h3>Computer<br>Solution</h3>
                     <div class="solution-grid" id="computer-solution-grid">
                         <!-- Computer solution will be added dynamically -->
                     </div>
@@ -651,7 +667,7 @@
             <button id="delete-word">Delete Word</button>
         </div>
         <div>
-            <button class="view-score-button" id="viewScoreButton"> View Score </button>
+            <button class="view-score-button" id="viewScoreButton"> View Score</button>
         </div>
 
     </div>
@@ -719,6 +735,7 @@
             // Add player solution to grid
             playerSolution.forEach(word => {
                 newWordRow = document.createElement('div');
+                newWordRow.className = 'solution-word';
                 newWordRow.textContent = word;
                 playerSolutionGrid.appendChild(newWordRow);
             });
@@ -727,6 +744,7 @@
 
             solution.forEach(word => {
                 newWordRow = document.createElement('div');
+                newWordRow.className = 'solution-word';
                 newWordRow.textContent = word;
                 computerSolutionGrid.appendChild(newWordRow);
             })
@@ -734,7 +752,7 @@
             // Update the player solution heading with the move count
             const playerHeading = document.getElementById('player-solution-heading');
             if (playerHeading) {
-                playerHeading.textContent = `Your Solution (${moves} moves)`;
+                playerHeading.innerHTML = `Your Solution`;
             }
 
             // Show the popup
@@ -815,6 +833,12 @@
 
             }
         });
+
+        document.getElementById('closeSolution').addEventListener('click', function () {
+            solutionPopup.classList.remove('visible');
+            // show view score button so user can go back to pop up
+            document.getElementById('viewScoreButton').style.display = 'block';
+        })
 
         document.getElementById('viewScoreButton').addEventListener('click', () => {
             showSolutionPopup();
